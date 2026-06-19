@@ -126,27 +126,57 @@
                     </div>
                 </div>
 
+                <!-- CIRI BARU: Pilihan nama anak untuk melihat skor -->
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                    <h3 class="font-black text-sm text-slate-700 flex items-center gap-1">📊 Prestasi & Skor Anak</h3>
+                    <div v-if="childProfiles.length === 0" class="text-xs text-slate-400 font-bold py-1">
+                        Sila tambah profil anak terlebih dahulu untuk melihat skor.
+                    </div>
+                    <div v-else class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Pilih nama anak:</label>
+                            <select v-model="selectedChildId" class="w-full p-2.5 border-2 border-slate-300 rounded-xl text-sm font-bold bg-slate-50 text-slate-700 focus:outline-none focus:border-purple-500 uppercase">
+                                <option value="">-- PILIH ANAK --</option>
+                                <option v-for="child in childProfiles" :key="child.id" :value="child.id">
+                                    👦 {{ child.name }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Paparan skor selepas anak dipilih -->
+                        <div v-if="selectedChild" class="bg-purple-50 p-3.5 rounded-xl border border-purple-200 shadow-inner mt-2 space-y-2">
+                            <div class="flex justify-between items-center border-b border-purple-200 pb-2">
+                                <span class="font-black text-base text-purple-700 uppercase">{{ selectedChild.name }}</span>
+                                <span class="bg-yellow-100 text-yellow-800 text-[11px] font-mono px-2 py-0.5 rounded-md font-bold">PIN: {{ selectedChild.pin }}</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-xs font-medium text-slate-700 pt-1">
+                                <div class="bg-white p-2 rounded-lg border border-purple-100 shadow-sm">
+                                    Sesi Selesai: <span class="font-bold text-slate-900 block text-lg mt-0.5">{{ getChildStats(selectedChild.name).total }}</span>
+                                </div>
+                                <div class="bg-white p-2 rounded-lg border border-purple-100 shadow-sm">
+                                    Purata Skor: <span class="font-bold text-emerald-600 block text-lg mt-0.5">{{ getChildStats(selectedChild.name).accuracy }}%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else class="text-center p-4 text-xs text-slate-400 font-medium bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                            Sila pilih nama anak di atas untuk memaparkan statistik ringkas.
+                        </div>
+                    </div>
+                </div>
+
                 <div class="space-y-3">
-                    <h3 class="font-black text-sm text-slate-700 px-1">👦 Senarai Profil & PIN Anak</h3>
+                    <h3 class="font-black text-sm text-slate-700 px-1">⚙️ Senarai Profil Pengurusan</h3>
                     <div v-if="childProfiles.length === 0" class="text-center p-6 text-xs text-slate-400 font-bold bg-slate-50 rounded-xl border border-dashed border-slate-300">
                         Tiada profil anak diwujudkan lagi. Sila tambah di atas.
                     </div>
-                    <div v-else class="space-y-3">
-                        <div v-for="child in childProfiles" :key="child.id" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <span class="font-black text-base text-purple-700 uppercase">{{ child.name }}</span>
-                                    <span class="ml-2 bg-yellow-100 text-yellow-800 text-[11px] font-mono px-2 py-0.5 rounded-md font-bold">PIN: {{ child.pin }}</span>
-                                </div>
-                                <div class="flex gap-1.5">
-                                    <button @click="regenerateChildPin(child.id)" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-2 py-1 rounded">Jana PIN Baru</button>
-                                    <button @click="deleteChildProfile(child.id)" class="text-[10px] bg-red-50 text-red-500 font-bold px-2 py-1 rounded hover:bg-red-100">Padam</button>
-                                </div>
+                    <div v-else class="space-y-2">
+                        <div v-for="child in childProfiles" :key="child.id" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center">
+                            <div>
+                                <span class="font-black text-sm text-slate-700 uppercase">{{ child.name }}</span>
                             </div>
-                            
-                            <div class="bg-slate-50 p-2 rounded-lg text-[11px] grid grid-cols-2 gap-1 text-slate-600 font-medium">
-                                <div>Sesi Selesai: <span class="font-bold text-slate-800">{{ getChildStats(child.name).total }}</span></div>
-                                <div>Purata Skor: <span class="font-bold text-emerald-600">{{ getChildStats(child.name).accuracy }}%</span></div>
+                            <div class="flex gap-1.5">
+                                <button @click="regenerateChildPin(child.id)" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-2 py-1 rounded">Jana PIN Baru</button>
+                                <button @click="deleteChildProfile(child.id)" class="text-[10px] bg-red-50 text-red-500 font-bold px-2 py-1 rounded hover:bg-red-100">Padam</button>
                             </div>
                         </div>
                     </div>
@@ -502,6 +532,7 @@
                 const isRegisterMode = ref(false);
                 const authLoading = ref(false);
                 const newChildName = ref('');
+                const selectedChildId = ref(''); // Penunjuk ID anak yang dipilih oleh parent
 
                 const childProfiles = ref([]);
                 const reportList = ref([]);
@@ -587,7 +618,6 @@
                 onMounted(() => {
                     onAuthStateChanged(fAuth, (firebaseUser) => {
                         if (firebaseUser) {
-                            // Sekatan utama: Elak auto-redirect ke dashboard jika anak sedang aktif bermain
                             if (!user.value) {
                                 parentUser.value = firebaseUser.uid;
                                 syncParentDatabaseBranches(firebaseUser.uid);
@@ -659,11 +689,9 @@
                                     for (const profileId in profiles) {
                                         if (String(profiles[profileId].pin) === childPinInput.value.trim()) {
                                             
-                                            // KUNCI UTAMA: Kosongkan parentUser supaya anak tiada hak akses ke Dashboard Ibu bapa
                                             parentUser.value = null; 
                                             user.value = profiles[profileId].name;
                                             
-                                            // Sinkronkan senarai laporan milik parent ini secara pasif
                                             const reportsRef = dbRef(fDatabase, `users/${parentUid}/reports`);
                                             onValue(reportsRef, (repSnapshot) => {
                                                 const repData = repSnapshot.val();
@@ -674,7 +702,6 @@
                                                 }
                                             });
 
-                                            // Simpan UID Parent di memori tersembunyi untuk proses penghantaran skor kelak
                                             config.value.activeParentId = parentUid;
 
                                             playSound('correct');
@@ -730,6 +757,7 @@
                 const deleteChildProfile = async (profileId) => {
                     if (!parentUser.value || !confirm("Padam profil anak ini secara kekal?")) return;
                     try {
+                        if (selectedChildId.value === profileId) selectedChildId.value = '';
                         await remove(dbRef(fDatabase, `users/${parentUser.value}/profiles/${profileId}`));
                         playSound('wrong');
                     } catch (e) {
@@ -746,7 +774,7 @@
                 };
 
                 const openParentDashboard = () => {
-                    if(!parentUser.value) return; // Sekatan tambahan fungsi
+                    if(!parentUser.value) return; 
                     playSound('click');
                     screen.value = 'parentDashboard';
                 };
@@ -762,9 +790,15 @@
                     childPinInput.value = '';
                     parentEmail.value = '';
                     parentPassword.value = '';
+                    selectedChildId.value = '';
                     config.value.activeParentId = null;
                     screen.value = 'login-selection';
                 };
+
+                // Compute profil anak yang dipilih
+                const selectedChild = computed(() => {
+                    return childProfiles.value.find(c => c.id === selectedChildId.value) || null;
+                });
 
                 const filteredReportList = computed(() => {
                     if (!user.value) return reportList.value; 
@@ -1220,7 +1254,7 @@
                     user, parentUser, screen, childPinInput, parentEmail, parentPassword, isRegisterMode, authLoading,
                     newChildName, childProfiles, reportList, filteredReportList, config, score, currentQuestionIndex,
                     currentQuestion, maxColumns, answerArray, carryArray, borrowArray, divisionInputs, activeTarget,
-                    formattedTime, currentAccuracy, finalTimeDisplay, reportSummary, questions, correctionIndex,
+                    formattedTime, currentAccuracy, finalTimeDisplay, reportSummary, questions, correctionIndex, selectedChildId, selectedChild,
                     handleParentAuth, loginAsChild, addChildProfile, regenerateChildPin, deleteChildProfile, getChildStats,
                     openParentDashboard, logout, getDigitAt, changeOperation, startSession, triggerBorrow, pressKey, 
                     submitAnswer, retrySession, goToMenu, playSound, openReports, clearReports, startCorrection, exitCorrection
