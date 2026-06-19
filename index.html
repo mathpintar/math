@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MathPintar - Latihan Matematik Bentuk Lazim</title>
+    <title>MathPintar - Pengurusan Ibu Bapa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,7 +45,6 @@
             <h1 @click="goToMenu" class="text-2xl font-bold tracking-wide font-kids cursor-pointer select-none">✏️ MathPintar</h1>
             <div v-if="user || parentUser" class="flex items-center gap-2">
                 <button v-if="screen === 'menu'" @click="openReports" class="bg-emerald-600 hover:bg-emerald-700 px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1">📊 Rekod</button>
-                <button v-if="parentUser && screen === 'parentDashboard'" @click="screen = 'menu'" class="bg-yellow-500 hover:bg-yellow-600 px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-900">🎮 Main</button>
                 <button v-if="parentUser && screen !== 'parentDashboard'" @click="openParentDashboard" class="bg-purple-600 hover:bg-purple-700 px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-white">👨‍👩‍👦 Urus</button>
                 <span class="text-sm font-bold bg-emerald-600 px-3 py-1 rounded-full text-yellow-200 max-w-[100px] truncate">👤 {{ user || 'Penjaga' }}</span>
                 <button @click="logout" class="bg-red-500 hover:bg-red-600 px-2 py-1 rounded-lg text-xs font-bold transition-all transform active:scale-95">Keluar</button>
@@ -126,7 +125,6 @@
                     </div>
                 </div>
 
-                <!-- CIRI BARU: Pilihan nama anak untuk melihat skor -->
                 <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
                     <h3 class="font-black text-sm text-slate-700 flex items-center gap-1">📊 Prestasi & Skor Anak</h3>
                     <div v-if="childProfiles.length === 0" class="text-xs text-slate-400 font-bold py-1">
@@ -143,7 +141,6 @@
                             </select>
                         </div>
 
-                        <!-- Paparan skor selepas anak dipilih -->
                         <div v-if="selectedChild" class="bg-purple-50 p-3.5 rounded-xl border border-purple-200 shadow-inner mt-2 space-y-2">
                             <div class="flex justify-between items-center border-b border-purple-200 pb-2">
                                 <span class="font-black text-base text-purple-700 uppercase">{{ selectedChild.name }}</span>
@@ -532,7 +529,7 @@
                 const isRegisterMode = ref(false);
                 const authLoading = ref(false);
                 const newChildName = ref('');
-                const selectedChildId = ref(''); // Penunjuk ID anak yang dipilih oleh parent
+                const selectedChildId = ref(''); 
 
                 const childProfiles = ref([]);
                 const reportList = ref([]);
@@ -795,7 +792,6 @@
                     screen.value = 'login-selection';
                 };
 
-                // Compute profil anak yang dipilih
                 const selectedChild = computed(() => {
                     return childProfiles.value.find(c => c.id === selectedChildId.value) || null;
                 });
