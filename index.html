@@ -6,7 +6,6 @@
     <title>MathPintar - Latihan Matematik Bentuk Lazim</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Share+Tech+Mono&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
@@ -16,12 +15,24 @@
             background-color: #f0fdf4;
             -webkit-text-size-adjust: 100%;
         }
-        .font-kids { font-family: 'Fredoka', sans-serif; }
-        .math-font { font-family: 'Share Tech Mono', monospace; }
-        .strikethrough { position: relative; }
+        .font-kids {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .math-font {
+            font-family: 'Share Tech Mono', monospace;
+        }
+        .strikethrough {
+            position: relative;
+        }
         .strikethrough::after {
-            content: ""; position: absolute; left: 0; top: 50%; width: 100%; height: 4px;
-            background: #ef4444; transform: rotate(-25deg);
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 4px;
+            background: #ef4444;
+            transform: rotate(-25deg);
         }
         [v-cloak] { display: none; }
     </style>
@@ -32,119 +43,119 @@
         
         <header class="bg-emerald-500 text-white p-4 flex justify-between items-center shadow-md rounded-b-2xl shrink-0">
             <h1 @click="goToMenu" class="text-2xl font-bold tracking-wide font-kids cursor-pointer select-none">✏️ MathPintar</h1>
-            <div v-if="currentParent || currentUser" class="flex items-center gap-2">
+            <div v-if="user || parentUser" class="flex items-center gap-2">
                 <button v-if="screen === 'menu'" @click="openReports" class="bg-emerald-600 hover:bg-emerald-700 px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1">📊 Rekod</button>
-                <span v-if="currentUser" class="text-sm font-bold bg-emerald-600 px-3 py-1 rounded-full text-yellow-200 max-w-[100px] truncate">👤 {{ currentUser }}</span>
-                <span v-else-if="currentParent" class="text-sm font-bold bg-purple-600 px-3 py-1 rounded-full text-white max-w-[120px] truncate">👨‍👩‍👦 Ibu Bapa</span>
+                <button v-if="parentUser && screen === 'parentDashboard'" @click="screen = 'menu'" class="bg-yellow-500 hover:bg-yellow-600 px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-900">🎮 Main</button>
+                <button v-if="parentUser && screen !== 'parentDashboard'" @click="openParentDashboard" class="bg-purple-600 hover:bg-purple-700 px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-white">👨‍👩‍👦 Urus</button>
+                <span class="text-sm font-bold bg-emerald-600 px-3 py-1 rounded-full text-yellow-200 max-w-[100px] truncate">👤 {{ user || 'Penjaga' }}</span>
                 <button @click="logout" class="bg-red-500 hover:bg-red-600 px-2 py-1 rounded-lg text-xs font-bold transition-all transform active:scale-95">Keluar</button>
             </div>
         </header>
 
         <main class="flex-grow p-4 flex flex-col justify-start items-center w-full overflow-y-auto touch-pan-y">
 
-            <div v-if="screen === 'welcome'" class="w-full space-y-6 text-center my-auto">
-                <div class="bg-emerald-50 p-6 rounded-3xl border-4 border-emerald-400 shadow-inner">
+            <div v-if="screen === 'login-selection'" class="w-full space-y-6 text-center my-auto">
+                <div class="bg-gradient-to-b from-emerald-400 to-emerald-500 p-6 rounded-3xl border-4 border-emerald-300 shadow-inner text-white">
                     <span class="text-6xl block mb-2">🧠</span>
-                    <h2 class="text-3xl font-black text-emerald-600 font-kids">MathPintar</h2>
-                    <p class="text-sm text-slate-600 mt-1">Jom kuasai Matematik bentuk lazim dengan seronok!</p>
+                    <h2 class="text-3xl font-black font-kids">MathPintar</h2>
+                    <p class="text-sm opacity-90 mt-1">Jom jadi bijak Matematik dengan bentuk lazim!</p>
                 </div>
-                <div class="grid grid-cols-1 gap-4 pt-4">
-                    <button @click="screen = 'child-login'; playSound('click');" class="bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black text-xl py-4 rounded-2xl shadow-lg border-b-8 border-yellow-600 transition-all uppercase">
-                        👦 Masuk Sebagai Anak (Guna PIN)
+                <div class="space-y-4 pt-4">
+                    <button @click="screen = 'login-child'" class="w-full bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black text-xl py-4 rounded-2xl shadow-md border-b-4 border-yellow-600 transition-all flex justify-center items-center gap-2">
+                        👦 MASUK SEBAGAI ANAK (PIN)
                     </button>
-                    <button @click="screen = 'parent-login'; playSound('click');" class="bg-purple-500 hover:bg-purple-600 text-white font-black text-base py-3 rounded-2xl shadow-lg border-b-8 border-purple-700 transition-all">
-                        🔑 Log Masuk Ibu Bapa (Emel)
+                    <button @click="screen = 'login-parent'" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-black text-lg py-3.5 rounded-2xl shadow-md border-b-4 border-slate-900 transition-all flex justify-center items-center gap-2">
+                        🔑 LOG MASUK IBU BAPA / GURU
                     </button>
                 </div>
             </div>
 
-            <div v-if="screen === 'parent-login'" class="w-full space-y-4 my-auto">
-                <h2 class="text-2xl font-black text-purple-600 font-kids text-center">👨‍👩‍👦 Log Masuk / Daftar Ibu Bapa</h2>
-                <div class="space-y-3">
-                    <label class="block font-bold text-slate-700">Masukkan Emel:</label>
-                    <input type="email" v-model="parentEmailInput" placeholder="contoh@gmail.com" class="w-full p-3 border-2 border-purple-400 rounded-xl focus:outline-none focus:border-purple-600 text-center font-bold">
+            <div v-if="screen === 'login-child'" class="w-full space-y-6 text-center my-auto">
+                <div class="text-left">
+                    <button @click="screen = 'login-selection'" class="text-emerald-600 font-bold text-sm">⬅️ Kembali</button>
                 </div>
-                <button @click="loginParent" :disabled="!parentEmailInput.trim() || loading" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-black py-3 rounded-xl shadow-md border-b-4 border-purple-700 transition-all disabled:opacity-50">
-                    {{ loading ? 'SILA TUNGGU...' : 'MASUK KE DASHBOARD' }}
+                <div class="bg-yellow-100 p-5 rounded-3xl border-4 border-yellow-400 shadow-inner">
+                    <h2 class="text-2xl font-black text-emerald-600 font-kids">Sila Masukkan No PIN Anda</h2>
+                    <p class="text-xs text-slate-600 mt-1">Dapatkan 4-digit PIN daripada akaun ibu bapa anda.</p>
+                </div>
+                <div class="space-y-3">
+                    <input type="text" v-model="childPinInput" placeholder="Contoh: 1234" class="w-full p-4 text-3xl border-4 border-emerald-400 rounded-2xl focus:outline-none focus:border-yellow-400 text-center font-mono font-black tracking-widest transition-colors" maxLength="4" @keyup.enter="loginAsChild">
+                </div>
+                <button @click="loginAsChild" :disabled="childPinInput.trim().length !== 4 || authLoading" class="w-full bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-black text-xl py-4 rounded-2xl shadow-lg border-b-8 border-emerald-700 transition-all uppercase">
+                    {{ authLoading ? 'Menyemak...' : '🚀 MASUK PERMAINAN' }}
                 </button>
-                <button @click="screen = 'welcome'" class="w-full text-slate-500 text-sm font-bold text-center block hover:underline">Kembali</button>
             </div>
 
-            <div v-if="screen === 'parent-dashboard'" class="w-full space-y-5">
-                <div class="bg-purple-50 border-2 border-purple-200 p-4 rounded-2xl">
-                    <p class="text-sm font-bold text-slate-700">Akaun: <span class="text-purple-600">{{ currentParent }}</span></p>
-                    <div class="mt-2 flex justify-between items-center bg-white p-2 rounded-xl border border-purple-100">
-                        <div>
-                            <span class="text-xs text-slate-500 font-bold block">🔑 PIN Anak-anak:</span>
-                            <span class="text-xl font-mono font-black tracking-widest text-purple-700">{{ parentData.pin }}</span>
-                        </div>
-                        <button @click="generateNewPin" class="bg-amber-400 hover:bg-amber-500 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-lg border-b-2 border-amber-600">
-                            🔄 Tukar PIN Baru
-                        </button>
+            <div v-if="screen === 'login-parent'" class="w-full space-y-4 text-center my-auto">
+                <div class="text-left">
+                    <button @click="screen = 'login-selection'" class="text-emerald-600 font-bold text-sm">⬅️ Kembali</button>
+                </div>
+                <div class="bg-slate-100 p-4 rounded-2xl border-2 border-slate-200">
+                    <h2 class="text-xl font-black text-slate-700 font-kids">{{ isRegisterMode ? 'Daftar Akaun Penjaga' : 'Log Masuk Ibu Bapa' }}</h2>
+                </div>
+                <div class="space-y-3 text-left">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 px-1 mb-1">Alamat E-mel:</label>
+                        <input type="email" v-model="parentEmail" placeholder="ibu_bapa@email.com" class="w-full p-3 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-emerald-500 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 px-1 mb-1">Kata Laluan (Min 6 Aksara):</label>
+                        <input type="password" v-model="parentPassword" placeholder="******" class="w-full p-3 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-emerald-500 text-sm">
                     </div>
                 </div>
+                <button @click="handleParentAuth" :disabled="authLoading" class="w-full bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-black text-md py-3 rounded-xl shadow-md transition-all uppercase">
+                    {{ authLoading ? 'Memproses...' : (isRegisterMode ? 'Daftar Akaun Baru' : 'Log Masuk') }}
+                </button>
+                <p class="text-xs text-slate-500 mt-2">
+                    {{ isRegisterMode ? 'Sudah mempunyai akaun?' : 'Belum mempunyai akaun?' }}
+                    <span @click="isRegisterMode = !isRegisterMode" class="text-emerald-600 font-bold underline cursor-pointer">{{ isRegisterMode ? 'Log Masuk Sini' : 'Daftar Sini' }}</span>
+                </p>
+            </div>
 
-                <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 space-y-3">
-                    <label class="font-bold text-sm block text-slate-700">➕ Tambah Profil Anak Baru:</label>
+            <div v-if="screen === 'parentDashboard'" class="w-full space-y-5 text-left">
+                <div class="bg-purple-50 border-2 border-purple-200 p-4 rounded-2xl">
+                    <p class="text-base font-bold text-slate-700">👋 Urus Akaun Keluarga</p>
+                    <p class="text-xs text-slate-500">Tambah profil anak-anak dan jana PIN login unik untuk mereka.</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                    <h3 class="font-black text-sm text-slate-700">➕ Tambah Profil Anak</h3>
                     <div class="flex gap-2">
-                        <input type="text" v-model="newChildName" placeholder="Nama Anak (cth: Ahmad)" class="flex-grow p-2.5 border border-slate-300 rounded-xl focus:outline-none font-bold text-sm uppercase">
-                        <button @click="addChildProfile" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 rounded-xl text-sm transition-all shadow-sm">
-                            Simpan
-                        </button>
+                        <input type="text" v-model="newChildName" placeholder="Nama anak (cth: Alyaa)" class="flex-grow p-2.5 border-2 border-slate-300 rounded-xl text-sm focus:outline-none focus:border-purple-500 uppercase font-bold" maxLength="12">
+                        <button @click="addChildProfile" :disabled="!newChildName.trim()" class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold text-xs px-4 rounded-xl shadow-sm transition-all">Tambah</button>
                     </div>
                 </div>
 
                 <div class="space-y-3">
-                    <h3 class="font-black text-slate-700 font-kids text-lg">📊 Prestasi Latihan Anak</h3>
-                    <div v-if="!parentData.children || Object.keys(parentData.children).length === 0" class="text-center text-slate-400 text-sm py-6">
-                        Tiada profil anak lagi. Sila tambah profil di atas.
+                    <h3 class="font-black text-sm text-slate-700 px-1">👦 Senarai Profil & PIN Anak</h3>
+                    <div v-if="childProfiles.length === 0" class="text-center p-6 text-xs text-slate-400 font-bold bg-slate-50 rounded-xl border border-dashed border-slate-300">
+                        Tiada profil anak diwujudkan lagi. Sila tambah di atas.
                     </div>
-                    
-                    <div v-else v-for="(childData, name) in parentData.children" :key="name" class="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm space-y-2">
-                        <div class="flex justify-between items-center border-b pb-2">
-                            <span class="font-black text-emerald-600 uppercase">👦 {{ name }}</span>
-                            <span class="text-xs text-slate-400 font-bold">{{ childData.reports ? Object.keys(childData.reports).length : 0 }} Sesi Selesai</span>
-                        </div>
-                        
-                        <div v-if="childData.reports" class="text-xs space-y-1 text-slate-600 max-h-[120px] overflow-y-auto bg-slate-50 p-2 rounded-lg">
-                            <div v-for="(rep, idx) in childData.reports" :key="idx" class="flex justify-between border-b border-dashed border-slate-200 pb-1 last:border-none">
-                                <span>{{ rep.date }} • {{ rep.operation }} ({{ rep.difficulty }})</span>
-                                <span class="font-bold text-blue-600">{{ rep.score }}/{{ rep.total }} ({{ rep.accuracy }}%)</span>
+                    <div v-else class="space-y-3">
+                        <div v-for="child in childProfiles" :key="child.id" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="font-black text-base text-purple-700 uppercase">{{ child.name }}</span>
+                                    <span class="ml-2 bg-yellow-100 text-yellow-800 text-[11px] font-mono px-2 py-0.5 rounded-md font-bold">PIN: {{ child.pin }}</span>
+                                </div>
+                                <div class="flex gap-1.5">
+                                    <button @click="regenerateChildPin(child.id)" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-2 py-1 rounded">Jana PIN Baru</button>
+                                    <button @click="deleteChildProfile(child.id)" class="text-[10px] bg-red-50 text-red-500 font-bold px-2 py-1 rounded hover:bg-red-100">Padam</button>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-slate-50 p-2 rounded-lg text-[11px] grid grid-cols-2 gap-1 text-slate-600 font-medium">
+                                <div>Sesi Selesai: <span class="font-bold text-slate-800">{{ getChildStats(child.name).total }}</span></div>
+                                <div>Purata Skor: <span class="font-bold text-emerald-600">{{ getChildStats(child.name).accuracy }}%</span></div>
                             </div>
                         </div>
-                        <div v-else class="text-xs text-slate-400 text-center py-2">Anak belum membuat sebarang latihan.</div>
                     </div>
                 </div>
-            </div>
-
-            <div v-if="screen === 'child-login'" class="w-full space-y-4 my-auto text-center">
-                <h2 class="text-2xl font-black text-amber-500 font-kids">👦 Log Masuk Anak</h2>
-                <p class="text-xs text-slate-500">Sila masukkan PIN 4-angka yang diberikan oleh Ibu Bapa.</p>
-                
-                <div class="space-y-3 text-left">
-                    <input type="password" v-model="childPinInput" placeholder="Sila Masukkan PIN" maxLength="4" class="w-full p-4 text-2xl border-4 border-amber-400 rounded-2xl text-center font-mono tracking-widest focus:outline-none">
-                </div>
-
-                <button @click="verifyChildPin" :disabled="loading" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-900 font-black text-xl py-4 rounded-2xl shadow-md border-b-4 border-amber-600">
-                    {{ loading ? 'MENYEMAK PIN...' : 'SUNTING / MASUK 🚀' }}
-                </button>
-                
-                <div v-if="foundParentAccount && foundParentAccount.children && Object.keys(foundParentAccount.children).length > 0" class="mt-4 p-3 bg-emerald-50 rounded-2xl border border-emerald-200 animate-fadeIn">
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Pilih Nama Anda:</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button v-for="(cData, name) in foundParentAccount.children" :key="name" @click="selectChildProfile(name)" class="bg-white hover:bg-emerald-100 border border-emerald-300 p-2 rounded-xl font-bold uppercase text-slate-800 text-sm shadow-sm">
-                            {{ name }}
-                        </button>
-                    </div>
-                </div>
-                <div v-else-if="foundParentAccount" class="text-xs text-red-500 mt-2">Ibu bapa belum menambah nama profil anda di dashboard.</div>
-
-                <button @click="screen = 'welcome'; foundParentAccount = null; childPinInput = '';" class="w-full text-slate-500 text-sm font-bold text-center block hover:underline pt-4">Kembali ke Utama</button>
             </div>
 
             <div v-if="screen === 'menu'" class="w-full space-y-5 my-auto">
                 <div class="bg-emerald-50 border-2 border-emerald-200 p-4 rounded-2xl">
-                    <p class="text-lg font-bold text-slate-700">Hai, <span class="text-emerald-600 font-black text-xl uppercase">{{ currentUser }}</span>! 👋</p>
+                    <p class="text-lg font-bold text-slate-700">Hai, <span class="text-emerald-600 font-black text-xl uppercase">{{ user }}</span>! 👋</p>
                     <p class="text-xs text-slate-500">Sila pilih tetapan kuiz anda di bawah:</p>
                 </div>
 
@@ -184,10 +195,13 @@
             </div>
 
             <div v-if="screen === 'gameplay' || screen === 'correction'" class="w-full flex flex-col justify-between items-center space-y-4">
+                
                 <div class="w-full bg-slate-100 p-3 rounded-2xl border-2 border-slate-200 flex justify-between items-center text-xs font-bold text-slate-600">
                     <div v-if="screen === 'gameplay'">Soalan: <span class="text-emerald-600 text-sm">{{ currentQuestionIndex + 1 }}</span> / {{ config.totalQuestions }}</div>
                     <div v-else class="text-red-600 text-sm bg-red-50 px-2 py-0.5 rounded-lg border border-red-200 animate-pulse">🛠️ MOD PEMBETULAN (Soalan {{ correctionIndex + 1 }})</div>
+                    
                     <div v-if="screen === 'gameplay'" class="text-center font-mono text-sm bg-slate-800 text-yellow-400 px-3 py-1 rounded-full shadow-inner">⏱️ {{ formattedTime }}</div>
+                    
                     <div v-if="screen === 'gameplay'">Skor: <span class="text-blue-600 text-sm">{{ score }}</span> ({{ currentAccuracy }}%)</div>
                     <button v-else @click="exitCorrection" class="bg-slate-700 text-white px-2.5 py-1 rounded-md text-[11px]">Batal</button>
                 </div>
@@ -198,6 +212,7 @@
                         <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[85px]">
                             {{ config.operation === 'Tambah' ? '+' : '×' }}
                         </div>
+
                         <div class="flex">
                             <div v-for="colIdx in maxColumns" :key="'col-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
                                 <div class="w-12 h-10 flex items-center justify-center mb-1">
@@ -207,12 +222,15 @@
                                            :class="activeTarget.type === 'carry' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-amber-300 bg-white'" 
                                            class="w-10 h-9 text-base text-center border-2 border-dashed rounded-lg font-bold text-purple-600 focus:outline-none cursor-pointer">
                                 </div>
+
                                 <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800">
                                     {{ getDigitAt(currentQuestion.num1, maxColumns - colIdx) }}
                                 </div>
+
                                 <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800 border-b-4 border-slate-800 pb-1">
                                     {{ getDigitAt(currentQuestion.num2, maxColumns - colIdx) }}
                                 </div>
+
                                 <div class="w-12 h-14 flex items-center justify-center pt-2">
                                     <input type="text" readonly 
                                            :value="answerArray[maxColumns - colIdx] || ''" 
@@ -226,6 +244,7 @@
 
                     <div v-if="config.operation === 'Tolak'" class="flex items-center justify-center relative">
                         <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[85px]">-</div>
+
                         <div class="flex">
                             <div v-for="colIdx in maxColumns" :key="'col-tolak-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
                                 <div class="w-12 h-8 flex items-center justify-center mb-1">
@@ -236,14 +255,17 @@
                                            :class="activeTarget.type === 'borrow' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-red-300 bg-white'" 
                                            class="w-10 h-8 text-sm text-center border-2 border-dashed rounded-md font-bold text-red-600 focus:outline-none cursor-pointer">
                                 </div>
+
                                 <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800 select-none cursor-pointer" @click="triggerBorrow(maxColumns - colIdx)">
                                     <span :class="{'strikethrough text-slate-400': borrowArray[maxColumns - colIdx] !== undefined && borrowArray[maxColumns - colIdx] !== ''}">
                                         {{ getDigitAt(currentQuestion.num1, maxColumns - colIdx) }}
                                     </span>
                                 </div>
+
                                 <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800 border-b-4 border-slate-800 pb-1">
                                     {{ getDigitAt(currentQuestion.num2, maxColumns - colIdx) }}
                                 </div>
+
                                 <div class="w-12 h-14 flex items-center justify-center pt-2">
                                     <input type="text" readonly 
                                            :value="answerArray[maxColumns - colIdx] || ''" 
@@ -257,20 +279,26 @@
 
                     <div v-if="config.operation === 'Bahagi'" class="flex items-center justify-center font-bold pt-6">
                         <div class="text-4xl text-slate-700 pr-3 pt-14">{{ currentQuestion.num2 }}</div>
+                        
                         <div class="border-t-4 border-l-4 border-slate-800 rounded-tl-2xl pl-2 pt-2 flex">
                             <div v-for="(digit, idx) in String(currentQuestion.num1).split('')" :key="'div-col-'+idx" class="flex flex-col items-center w-16 relative mx-0.5">
+                                
                                 <div class="w-12 h-12 flex items-center justify-center mb-1">
                                     <input type="text" readonly 
                                            :value="divisionInputs.quotientArray[idx] !== undefined ? divisionInputs.quotientArray[idx] : ''" 
                                            @click="activeTarget = {type: 'div_quotient_arr', index: idx}; playSound('click');" 
                                            :class="activeTarget.type === 'div_quotient_arr' && activeTarget.index === idx ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" 
-                                           class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none cursor-pointer">
+                                class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none cursor-pointer">
                                 </div>
+
                                 <div class="w-full border-b-2 border-slate-300 my-1"></div>
+
                                 <div class="w-full h-14 flex items-center justify-start relative pl-1">
-                                    <span :class="{'strikethrough text-slate-400': divisionInputs.quotientArray[idx] !== '' && divisionInputs.quotientArray[idx] !== undefined}" class="text-4xl font-black text-slate-800 select-none">
+                                    <span :class="{'strikethrough text-slate-400': divisionInputs.quotientArray[idx] !== '' && divisionInputs.quotientArray[idx] !== undefined}" 
+                                          class="text-4xl font-black text-slate-800 select-none">
                                         {{ digit }}
                                     </span>
+
                                     <input v-if="idx < String(currentQuestion.num1).length - 1 && divisionInputs.quotientArray[idx] !== '' && divisionInputs.quotientArray[idx] !== undefined" 
                                            type="text" readonly 
                                            :value="divisionInputs.remainderArray[idx] !== undefined ? divisionInputs.remainderArray[idx] : ''" 
@@ -278,6 +306,7 @@
                                            :class="activeTarget.type === 'div_remainder_arr' && activeTarget.index === idx ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-blue-400 border-solid bg-white text-blue-600'" 
                                            class="w-7 h-7 text-xs text-center border-2 rounded absolute right-0 top-1 font-bold focus:outline-none cursor-pointer" placeholder="b">
                                 </div>
+
                                 <div v-if="idx === String(currentQuestion.num1).length - 1 && divisionInputs.quotientArray[idx] !== '' && divisionInputs.quotientArray[idx] !== undefined" class="absolute bottom-[-50px] flex flex-col items-center">
                                     <span class="text-[9px] text-red-500 font-bold uppercase tracking-tight">Baki Akhir</span>
                                     <input type="text" readonly 
@@ -286,18 +315,11 @@
                                            :class="activeTarget.type === 'div_final_remainder' ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" 
                                            class="w-9 h-8 text-center border-2 rounded-lg text-base font-bold focus:outline-none cursor-pointer">
                                 </div>
+
                             </div>
                         </div>
                     </div>
 
-                </div>
-
-                <div class="w-full bg-slate-200 p-2 rounded-2xl grid grid-cols-4 gap-1.5 shrink-0 shadow-inner">
-                    <button v-for="n in [1,2,3,4,5,6,7,8,9,0]" :key="'key-'+n" @click="pressKey(n)" class="bg-white hover:bg-slate-50 font-black text-xl py-3 rounded-xl shadow-sm border-b-2 border-slate-400 active:scale-95 transition-all">
-                        {{ n }}
-                    </button>
-                    <button @click="pressKey('CLEAR')" class="bg-amber-400 hover:bg-amber-500 text-slate-900 font-black text-sm py-3 rounded-xl shadow-sm border-b-2 border-amber-600 active:scale-95 col-span-1">C</button>
-                    <button @click="pressKey('BACKSPACE')" class="bg-red-400 hover:bg-red-500 text-white font-black text-sm py-3 rounded-xl shadow-sm border-b-2 border-red-600 active:scale-95 col-span-1">⌫</button>
                 </div>
 
                 <button @click="submitAnswer" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-black text-lg py-3.5 rounded-2xl shadow-md border-b-4 border-blue-700 transition-all transform active:scale-95 active:border-b-0 uppercase">
@@ -308,7 +330,7 @@
             <div v-if="screen === 'results'" class="w-full space-y-5 py-2 my-auto">
                 <div class="bg-gradient-to-b from-yellow-300 to-amber-400 p-5 rounded-3xl shadow-xl border-4 border-white text-slate-900 relative">
                     <span class="text-5xl block mb-1">🎉</span>
-                    <h2 class="text-2xl font-black uppercase tracking-wide font-kids text-amber-950">Hebat, {{ currentUser }}!</h2>
+                    <h2 class="text-2xl font-black uppercase tracking-wide font-kids text-amber-950">Hebat, {{ user }}!</h2>
                     <p class="font-bold text-amber-900 text-xs">Anda telah menamatkan latihan.</p>
                 </div>
 
@@ -387,15 +409,15 @@
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
                             <tr class="bg-slate-100 text-slate-600 font-black border-b border-slate-200 uppercase tracking-wider">
-                                <th class="p-3">Operasi / Tahap</th>
+                                <th class="p-3">Pengguna / Operasi</th>
                                 <th class="p-3 text-center">Skor</th>
                                 <th class="p-3 text-right">Masa</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
-                            <tr v-for="(item, idx) in reportList" :key="'rep-'+idx" class="hover:bg-slate-50 transition-colors">
+                            <tr v-for="(item, idx) in filteredReportList" :key="'rep-'+idx" class="hover:bg-slate-50 transition-colors">
                                 <td class="p-3">
-                                    <div class="font-bold text-slate-900">{{ item.operation }}</div>
+                                    <div class="font-bold text-slate-900"><span class="text-purple-600 uppercase">[{{ item.studentName || 'Tiada' }}]</span> {{ item.operation }}</div>
                                     <div class="text-[10px] text-slate-400 font-semibold">{{ item.difficulty }} • {{ item.date }}</div>
                                 </td>
                                 <td class="p-3 text-center">
@@ -407,7 +429,7 @@
                                     {{ item.durationStr }}
                                 </td>
                             </tr>
-                            <tr v-if="reportList.length === 0">
+                            <tr v-if="filteredReportList.length === 0">
                                 <td colspan="3" class="p-8 text-center text-slate-400 font-bold">
                                     📭 Tiada rekod latihan dijumpai lagi.<br>
                                     <span class="text-[11px] font-normal text-slate-400">Jom mula selesaikan satu kuiz latihan!</span>
@@ -416,16 +438,41 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="flex justify-end pt-1" v-if="filteredReportList.length > 0">
+                    <button @click="clearReports" class="text-xs font-bold text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg border border-red-200 transition-colors">
+                        🗑️ Padam Semua Sejarah Rekod
+                    </button>
+                </div>
             </div>
 
         </main>
+
+        <footer v-if="screen === 'gameplay' || screen === 'correction'" class="bg-slate-200 p-3 rounded-t-3xl shadow-2xl w-full border-t border-slate-300 shrink-0">
+            <div class="grid grid-cols-3 gap-2 max-w-sm mx-auto">
+                <button v-for="num in ['1', '2', '3', '4', '5', '6', '7', '8', '9']" :key="num" @click="pressKey(num)" class="bg-white active:bg-slate-300 font-bold text-2xl py-3 rounded-xl shadow-sm text-slate-800 border-b-4 border-slate-300 transition-all transform active:scale-95">
+                    {{ num }}
+                </button>
+                <button @click="pressKey('C')" class="bg-red-500 text-white font-black text-xl py-3 rounded-xl shadow-sm border-b-4 border-red-700 transition-all transform active:scale-95">
+                    C
+                </button>
+                <button @click="pressKey('0')" class="bg-white active:bg-slate-300 font-bold text-2xl py-3 rounded-xl shadow-sm text-slate-800 border-b-4 border-slate-300 transition-all transform active:scale-95">
+                    0
+                </button>
+                <button @click="pressKey('BACKSPACE')" class="bg-yellow-500 text-white font-bold text-xl py-3 rounded-xl shadow-sm border-b-4 border-yellow-600 flex justify-center items-center transition-all transform active:scale-95">
+                    ←
+                </button>
+            </div>
+        </footer>
+
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, get, update, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref as dbRef, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Firebase Config yang anda sediakan
+        // Your provided Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCWsd4hqL5kPgzh-pjwcBhzVLXyTGJU_Xw",
             authDomain: "mathpintar-61339.firebaseapp.com",
@@ -436,280 +483,308 @@
             appId: "1:360973475425:web:63da6361e7cac39b99d420"
         };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        // Initialize Firebase services
+        const fApp = initializeApp(firebaseConfig);
+        const fAuth = getAuth(fApp);
+        const fDatabase = getDatabase(fApp);
 
-        const { createApp, ref: vueRef, computed, onMounted, watch } = Vue;
+        const { createApp, ref, computed, onMounted } = Vue;
 
         createApp({
             setup() {
-                // NAVIGATION & USER STATE
-                const screen = vueRef('welcome'); // welcome, parent-login, parent-dashboard, child-login, menu, gameplay, correction, results, reports
-                const parentEmailInput = vueRef('');
-                const childPinInput = vueRef('');
-                const newChildName = vueRef('');
-                const loading = vueRef(false);
-
-                const currentParent = vueRef(null); // Menyimpan emel parent yang log masuk
-                const currentParentKey = vueRef(''); // Emel yang ditukar format agar selamat untuk Firebase key
-                const currentUser = vueRef(null);   // Nama anak yang aktif
+                // Identity Management states
+                const user = ref(null);               // Current active participant/child profile name
+                const parentUser = ref(null);         // Parent Account UID reference string
+                const screen = ref('login-selection');
                 
-                // DATA STRUCTURES
-                const parentData = vueRef({
-                    pin: '',
-                    children: {}
-                });
-                const foundParentAccount = vueRef(null); // Digunakan semasa anak cari guna PIN
+                // Form input references
+                const childPinInput = ref('');
+                const parentEmail = ref('');
+                const parentPassword = ref('');
+                const isRegisterMode = ref(false);
+                const authLoading = ref(false);
+                const newChildName = ref('');
 
-                // GAMEPLAY CONFIG & VARIABLES
-                const config = vueRef({
+                // Managed Synchronized Data Nodes 
+                const childProfiles = ref([]);
+                const reportList = ref([]);
+
+                const config = ref({
                     operation: 'Tambah',
                     totalQuestions: 10,
                     difficulty: 'Mudah'
                 });
 
-                const questions = vueRef([]);
-                const currentQuestionIndex = vueRef(0);
-                const score = vueRef(0);
-                const timer = vueRef(null);
-                const secondsElapsed = vueRef(0);
-                const finalTimeDisplay = vueRef('00:00');
+                const questions = ref([]);
+                const currentQuestionIndex = ref(0);
+                const score = ref(0);
+                const usedQuestionCombos = ref(new Set());
+                const correctionIndex = ref(null);
 
-                // INPUT STATES FOR MATH
-                const activeTarget = vueRef({ type: 'answer', index: 0 });
-                const answerArray = vueRef({});
-                const carryArray = vueRef({});
-                const borrowArray = vueRef({});
-                const divisionInputs = vueRef({
-                    quotientArray: {},
-                    remainderArray: {},
+                // Math Input Arrays
+                const answerArray = ref([]); 
+                const carryArray = ref([]);  
+                const borrowArray = ref([]); 
+                
+                const divisionInputs = ref({
+                    quotientArray: [],
+                    remainderArray: [],
                     finalRemainder: ''
                 });
 
-                // CORRECTION MODE
-                const correctionIndex = vueRef(null);
+                const activeTarget = ref({ type: 'answer', index: 0 });
+                const timerSeconds = ref(0);
+                const timerInterval = ref(null);
+                const finalTimeDisplay = ref('');
 
-                // UTILS: Clean Email for Firebase Path Key (Remove '.' etc)
-                const encodeEmail = (email) => {
-                    return email.toLowerCase().replace(/\./g, ',').replace(/@/g, '_at_');
-                };
-
-                // SOUND EFFECT FX (DUMMY/AUDIO CONTEXT)
+                // Web Audio API Synthesizer Core Engine
                 const playSound = (type) => {
                     try {
-                        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                        const osc = ctx.createOscillator();
-                        const gain = ctx.createGain();
-                        osc.connect(gain);
-                        gain.connect(ctx.destination);
+                        const AudioContext = window.AudioContext || window.webkitAudioContext;
+                        if (!AudioContext) return;
+                        const ctx = new AudioContext();
                         
                         if (type === 'click') {
+                            const osc = ctx.createOscillator();
+                            const gain = ctx.createGain();
+                            osc.type = 'sine';
                             osc.frequency.setValueAtTime(400, ctx.currentTime);
-                            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                            osc.start(); osc.stop(ctx.currentTime + 0.05);
-                        } else if (type === 'correct') {
-                            osc.frequency.setValueAtTime(600, ctx.currentTime);
-                            osc.frequency.setValueAtTime(900, ctx.currentTime + 0.08);
-                            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                            osc.start(); osc.stop(ctx.currentTime + 0.2);
-                        } else if (type === 'wrong') {
-                            osc.frequency.setValueAtTime(250, ctx.currentTime);
-                            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                            osc.start(); osc.stop(ctx.currentTime + 0.2);
+                            osc.frequency.exponentialRampToValueAtTime(10, ctx.currentTime + 0.1);
+                            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                            osc.connect(gain);
+                            gain.connect(ctx.destination);
+                            osc.start();
+                            osc.stop(ctx.currentTime + 0.1);
+                        } 
+                        else if (type === 'correct') {
+                            const now = ctx.currentTime;
+                            [600, 900].forEach((freq, i) => {
+                                const osc = ctx.createOscillator();
+                                const gain = ctx.createGain();
+                                osc.type = 'triangle';
+                                osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                                gain.gain.setValueAtTime(0.2, now + i * 0.08);
+                                gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.3);
+                                osc.connect(gain);
+                                gain.connect(ctx.destination);
+                                osc.start(now + i * 0.08);
+                                osc.stop(now + i * 0.08 + 0.3);
+                            });
+                        } 
+                        else if (type === 'wrong') {
+                            const osc = ctx.createOscillator();
+                            const gain = ctx.createGain();
+                            osc.type = 'sawtooth';
+                            osc.frequency.setValueAtTime(150, ctx.currentTime);
+                            osc.frequency.linearRampToValueAtTime(80, ctx.currentTime + 0.3);
+                            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                            osc.connect(gain);
+                            gain.connect(ctx.destination);
+                            osc.start();
+                            osc.stop(ctx.currentTime + 0.3);
                         }
-                    } catch(e) {}
+                    } catch (e) {
+                        console.log("Audio API issue.");
+                    }
                 };
 
-                // ==========================================
-                // FIREBASE CORE ACTIONS
-                // ==========================================
-                
-                // 1. Parent Login / Register
-                const loginParent = async () => {
-                    if (!parentEmailInput.value.trim()) return;
-                    loading.value = true;
-                    playSound('click');
-                    
-                    const emailKey = encodeEmail(parentEmailInput.value);
-                    currentParentKey.value = emailKey;
-                    
-                    try {
-                        const parentRef = ref(db, 'users/' + emailKey);
-                        const snapshot = await get(parentRef);
-                        
-                        if (snapshot.exists()) {
-                            // Akaun wujud, ambil data
-                            parentData.value = snapshot.value;
-                            if(!parentData.value.children) parentData.value.children = {};
+                // Track and observe global authentication states
+                onMounted(() => {
+                    onAuthStateChanged(fAuth, (firebaseUser) => {
+                        if (firebaseUser) {
+                            parentUser.value = firebaseUser.uid;
+                            // Synchronize child profiles and historical records on demand
+                            syncParentDatabaseBranches(firebaseUser.uid);
+                            if (!user.value) {
+                                screen.value = 'parentDashboard';
+                            }
                         } else {
-                            // Akaun baru, cipta data baru automatik
-                            const randomPin = Math.floor(1000 + Math.random() * 9000).toString();
-                            const initialData = {
-                                email: parentEmailInput.value,
-                                pin: randomPin,
-                                children: {}
-                            };
-                            await set(parentRef, initialData);
-                            parentData.value = initialData;
+                            parentUser.value = null;
+                            if (!user.value) {
+                                screen.value = 'login-selection';
+                            }
                         }
-                        
-                        currentParent.value = parentEmailInput.value;
-                        screen.value = 'parent-dashboard';
+                    });
+                });
+
+                // Establish real-time data streams from Cloud Realtime Database nodes
+                const syncParentDatabaseBranches = (uid) => {
+                    const profilesRef = dbRef(fDatabase, `users/${uid}/profiles`);
+                    onValue(profilesRef, (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            childProfiles.value = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                        } else {
+                            childProfiles.value = [];
+                        }
+                    });
+
+                    const reportsRef = dbRef(fDatabase, `users/${uid}/reports`);
+                    onValue(reportsRef, (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            reportList.value = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                        } else {
+                            reportList.value = [];
+                        }
+                    });
+                };
+
+                // Parent Account handling mechanism
+                const handleParentAuth = async () => {
+                    if (!parentEmail.value || !parentPassword.value) return;
+                    authLoading.value = true;
+                    try {
+                        if (isRegisterMode.value) {
+                            await createUserWithEmailAndPassword(fAuth, parentEmail.value, parentPassword.value);
+                            alert("Akaun Berjaya didaftarkan!");
+                        } else {
+                            await signInWithEmailAndPassword(fAuth, parentEmail.value, parentPassword.value);
+                        }
+                        screen.value = 'parentDashboard';
                     } catch (error) {
-                        alert("Ralat sambungan database: " + error.message);
+                        alert("Ralat Pengesahan: " + error.message);
+                        playSound('wrong');
                     } finally {
-                        loading.value = false;
+                        authLoading.value = false;
                     }
                 };
 
-                // 2. Generate New PIN
-                const generateNewPin = async () => {
-                    if (!currentParentKey.value) return;
-                    const newPin = Math.floor(1000 + Math.random() * 9000).toString();
-                    playSound('click');
+                // Direct child verification by scanning matching 4-digit token pins
+                const loginAsChild = async () => {
+                    if (childPinInput.value.trim().length !== 4) return;
+                    authLoading.value = true;
                     try {
-                        await update(ref(db, `users/${currentParentKey.value}`), { pin: newPin });
-                        parentData.value.pin = newPin;
-                        alert("PIN Baru Berjaya Dijana: " + newPin);
-                    } catch (e) {
-                        alert("Gagal menukar PIN.");
-                    }
-                };
+                        const globalUsersRef = dbRef(fDatabase, 'users');
+                        const snapshot = await get(globalUsersRef);
+                        let pinFound = false;
 
-                // 3. Add Child Profile
-                const addChildProfile = async () => {
-                    const name = newChildName.value.trim().toUpperCase();
-                    if (!name) return;
-                    if (parentData.value.children && parentData.value.children[name]) {
-                        alert("Nama profil anak ini sudah wujud!");
-                        return;
-                    }
-                    playSound('click');
-                    
-                    try {
-                        if (!parentData.value.children) parentData.value.children = {};
-                        
-                        // Structure rekod anak baru
-                        parentData.value.children[name] = {
-                            name: name,
-                            reports: {}
-                        };
-                        
-                        await update(ref(db, `users/${currentParentKey.value}/children`), {
-                            [name]: { name: name, reports: [] }
-                        });
-                        
-                        newChildName.value = '';
-                        alert(`Profil ${name} berjaya disimpan!`);
-                    } catch (e) {
-                        alert("Gagal menambah profil anak.");
-                    }
-                };
-
-                // 4. Verify Child PIN (Search across database)
-                const verifyChildPin = async () => {
-                    if (childPinInput.value.length < 4) {
-                        alert("Sila masukkan 4-angka PIN penuh.");
-                        return;
-                    }
-                    loading.value = true;
-                    playSound('click');
-                    foundParentAccount.value = null;
-
-                    try {
-                        const usersRef = ref(db, 'users');
-                        const snapshot = await get(usersRef);
-                        
                         if (snapshot.exists()) {
-                            let matchFound = false;
-                            let matchedKey = '';
                             const allUsers = snapshot.val();
-                            
-                            // Loop untuk cari akaun parent yang mempunyai PIN sepadan
-                            for (let key in allUsers) {
-                                if (allUsers[key].pin === childPinInput.value) {
-                                    matchFound = true;
-                                    matchedKey = key;
-                                    foundParentAccount.value = allUsers[key];
-                                    currentParentKey.value = key;
-                                    currentParent.value = allUsers[key].email;
-                                    break;
+                            for (const parentUid in allUsers) {
+                                const profiles = allUsers[parentUid].profiles;
+                                if (profiles) {
+                                    for (const profileId in profiles) {
+                                        if (String(profiles[profileId].pin) === childPinInput.value.trim()) {
+                                            parentUser.value = parentUid;
+                                            user.value = profiles[profileId].name;
+                                            syncParentDatabaseBranches(parentUid);
+                                            playSound('correct');
+                                            screen.value = 'menu';
+                                            pinFound = true;
+                                            break;
+                                        }
+                                    }
                                 }
+                                if (pinFound) break;
                             }
-                            
-                            if (!matchFound) {
-                                alert("PIN tidak dijumpai. Sila dapatkan PIN betul daripada Ibu Bapa.");
-                            }
-                        } else {
-                            alert("Tiada rekod data di dalam sistem.");
+                        }
+
+                        if (!pinFound) {
+                            alert("No PIN tidak sah. Sila semak dengan ibu bapa anda.");
+                            playSound('wrong');
                         }
                     } catch (e) {
-                        alert("Ralat menyemak PIN: " + e.message);
+                        alert("Ralat sambungan: " + e.message);
                     } finally {
-                        loading.value = false;
+                        authLoading.value = false;
                     }
                 };
 
-                // 5. Select Child Profile
-                const selectChildProfile = (name) => {
-                    currentUser.value = name;
-                    playSound('click');
-                    screen.value = 'menu';
-                };
-
-                // 6. Save Report Session To Firebase
-                const saveReportToFirebase = async (reportItem) => {
-                    if (!currentParentKey.value || !currentUser.value) return;
+                // Profile Provisioning: Add unique profile
+                const addChildProfile = async () => {
+                    if (!newChildName.value.trim() || !parentUser.value) return;
                     try {
-                        // Dapatkan rekod lama untuk tambah array baru
-                        const reportsRef = ref(db, `users/${currentParentKey.value}/children/${currentUser.value}/reports`);
-                        const snapshot = await get(reportsRef);
-                        let currentReports = [];
-                        if (snapshot.exists()) {
-                            currentReports = snapshot.val();
-                            if (!Array.isArray(currentReports)) currentReports = Object.values(currentReports);
-                        }
-                        currentReports.push(reportItem);
-                        await set(reportsRef, currentReports);
+                        const pin = Math.floor(1000 + Math.random() * 9000); // Generate 4-digit code
+                        const profilesRef = dbRef(fDatabase, `users/${parentUser.value}/profiles`);
+                        const newProfile = {
+                            name: newChildName.value.trim().toLowerCase(),
+                            pin: pin
+                        };
+                        await push(profilesRef, newProfile);
+                        newChildName.value = '';
+                        playSound('correct');
                     } catch (e) {
-                        console.error("Gagal hantar rekod ke awan:", e);
+                        alert("Gagal menambah profil: " + e.message);
                     }
                 };
 
-                const logout = () => {
-                    playSound('click');
-                    currentParent.value = null;
-                    currentParentKey.value = '';
-                    currentUser.value = null;
-                    parentData.value = { pin: '', children: {} };
-                    foundParentAccount.value = null;
-                    parentEmailInput.value = '';
-                    childPinInput.value = '';
-                    screen.value = 'welcome';
+                // Regenerate access token pin
+                const regenerateChildPin = async (profileId) => {
+                    if (!parentUser.value) return;
+                    try {
+                        const newPin = Math.floor(1000 + Math.random() * 9000);
+                        await set(dbRef(fDatabase, `users/${parentUser.value}/profiles/${profileId}/pin`), newPin);
+                        playSound('correct');
+                    } catch (e) {
+                        alert("Gagal menukar PIN: " + e.message);
+                    }
                 };
 
-                // ==========================================
-                // MATHEMATICS ENGINE LOGIC (KUIZ)
-                // ==========================================
-                const maxColumns = computed(() => {
-                    if (!currentQuestion.value) return 3;
-                    const l1 = String(currentQuestion.value.num1).length;
-                    const l2 = String(currentQuestion.value.num2).length;
-                    return Math.max(l1, l2) + (config.value.operation === 'Tambah' || config.value.operation === 'Darab' ? 1 : 0);
+                // Delete profile node safely
+                const deleteChildProfile = async (profileId) => {
+                    if (!parentUser.value || !confirm("Padam profil anak ini secara kekal?")) return;
+                    try {
+                        await remove(dbRef(fDatabase, `users/${parentUser.value}/profiles/${profileId}`));
+                        playSound('wrong');
+                    } catch (e) {
+                        alert("Gagal memadam: " + e.message);
+                    }
+                };
+
+                // Retrieve compiled runtime evaluation variables per profile
+                const getChildStats = (name) => {
+                    const childReports = reportList.value.filter(r => r.studentName === name.toLowerCase());
+                    if (childReports.length === 0) return { total: 0, accuracy: 0 };
+                    const total = childReports.length;
+                    const avgAcc = Math.round(childReports.reduce((s, r) => s + (r.accuracy || 0), 0) / total);
+                    return { total, accuracy: avgAcc };
+                };
+
+                const openParentDashboard = () => {
+                    playSound('click');
+                    screen.value = 'parentDashboard';
+                };
+
+                const logout = async () => {
+                    playSound('wrong');
+                    stopTimer();
+                    await signOut(fAuth);
+                    user.value = null;
+                    parentUser.value = null;
+                    childProfiles.value = [];
+                    reportList.value = [];
+                    childPinInput.value = '';
+                    parentEmail.value = '';
+                    parentPassword.value = '';
+                    screen.value = 'login-selection';
+                };
+
+                // Computed filter views for active students / monitoring contexts
+                const filteredReportList = computed(() => {
+                    if (!user.value) return reportList.value; // Show all to parent
+                    return reportList.value.filter(r => r.studentName === user.value.toLowerCase());
                 });
 
                 const currentQuestion = computed(() => {
                     if (screen.value === 'correction' && correctionIndex.value !== null) {
-                        return questions.value[correctionIndex.value];
+                        return questions.value[correctionIndex.value] || { num1: 0, num2: 0 };
                     }
                     return questions.value[currentQuestionIndex.value] || { num1: 0, num2: 0 };
                 });
 
+                const maxColumns = computed(() => {
+                    const len1 = String(currentQuestion.value.num1).length;
+                    const len2 = String(currentQuestion.value.num2).length;
+                    return Math.max(len1, len2) + (config.value.operation === 'Tambah' || config.value.operation === 'Darab' ? 1 : 0);
+                });
+
                 const formattedTime = computed(() => {
-                    const mins = Math.floor(secondsElapsed.value / 60);
-                    const secs = secondsElapsed.value % 60;
-                    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                    const mins = Math.floor(timerSeconds.value / 60);
+                    const secs = timerSeconds.value % 60;
+                    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
                 });
 
                 const currentAccuracy = computed(() => {
@@ -717,250 +792,411 @@
                     return Math.round((score.value / currentQuestionIndex.value) * 100);
                 });
 
-                const reportList = computed(() => {
-                    if (screen.value === 'reports' && currentParentKey.value && currentUser.value) {
-                        // Mengambil rekod peribadi daripada local state anak yang dipadankan
-                        if (parentData.value.children && parentData.value.children[currentUser.value]) {
-                            const reps = parentData.value.children[currentUser.value].reports || [];
-                            return Array.isArray(reps) ? [...reps].reverse() : Object.values(reps).reverse();
-                        }
+                const reportSummary = computed(() => {
+                    const targetedList = filteredReportList.value;
+                    if (targetedList.length === 0) {
+                        return { totalSessions: 0, avgAccuracy: 0, avgTime: '0s' };
                     }
-                    return [];
+                    const totalSessions = targetedList.length;
+                    const sumAccuracy = targetedList.reduce((sum, item) => sum + item.accuracy, 0);
+                    const avgAccuracy = Math.round(sumAccuracy / totalSessions);
+                    
+                    const totalSecs = targetedList.reduce((sum, item) => sum + item.durationSecs, 0);
+                    const avgSecs = Math.round(totalSecs / totalSessions);
+                    
+                    let avgTimeStr = `${avgSecs}s`;
+                    if (avgSecs >= 60) {
+                        avgTimeStr = `${Math.floor(avgSecs/60)}m ${avgSecs%60}s`;
+                    }
+
+                    return { totalSessions, avgAccuracy, avgTime: avgTimeStr };
                 });
 
-                const reportSummary = computed(() => {
-                    const list = reportList.value;
-                    if (list.length === 0) return { totalSessions: 0, avgAccuracy: 0, avgTime: '0s' };
-                    const totalSecs = list.reduce((acc, item) => acc + (item.duration || 0), 0);
-                    const totalAcc = list.reduce((acc, item) => acc + (item.accuracy || 0), 0);
-                    const avgMins = Math.floor((totalSecs / list.length) / 60);
-                    const avgSecs = Math.round((totalSecs / list.length) % 60);
-                    
-                    return {
-                        totalSessions: list.length,
-                        avgAccuracy: Math.round(totalAcc / list.length),
-                        avgTime: avgMins > 0 ? `${avgMins}m ${avgSecs}s` : `${avgSecs}s`
-                    };
-                });
+                const getDigitAt = (number, index) => {
+                    const str = String(number);
+                    const revIndex = str.length - 1 - index;
+                    if (revIndex >= 0 && revIndex < str.length) {
+                        return str[revIndex];
+                    }
+                    return ''; 
+                };
 
                 const changeOperation = (op) => {
                     config.value.operation = op;
                     playSound('click');
                 };
 
-                const generateQuestions = () => {
-                    const list = [];
-                    const ops = config.value.operation;
-                    const diff = config.value.difficulty;
-
-                    for (let i = 0; i < config.value.totalQuestions; i++) {
-                        let n1 = 0, n2 = 0;
-                        if (ops === 'Tambah' || ops === 'Tolak') {
-                            if (diff === 'Mudah') { n1 = rand(10, 89); n2 = rand(1, 9); }
-                            else if (diff === 'Sederhana') { n1 = rand(50, 499); n2 = rand(10, 99); }
-                            else { n1 = rand(500, 8999); n2 = rand(100, 999); }
-                            if (ops === 'Tolak' && n1 < n2) { const t = n1; n1 = n2; n2 = t; }
-                        } else if (ops === 'Darab') {
-                            if (diff === 'Mudah') { n1 = rand(10, 99); n2 = rand(2, 5); }
-                            else if (diff === 'Sederhana') { n1 = rand(11, 99); n2 = rand(6, 9); }
-                            else { n1 = rand(100, 999); n2 = rand(2, 9); }
-                        } else if (ops === 'Bahagi') {
-                            if (diff === 'Mudah') { n2 = rand(2, 5); n1 = n2 * rand(5, 15) + rand(0, 1); }
-                            else if (diff === 'Sederhana') { n2 = rand(3, 9); n1 = n2 * rand(12, 40) + rand(0, n2-1); }
-                            else { n2 = rand(4, 12); n1 = n2 * rand(40, 200) + rand(0, n2-1); }
-                        }
-                        list.push({ num1: n1, num2: n2, isCorrect: false, studentAnsStr: '', correctAnsStr: '', wasCorrected: false });
-                    }
-                    questions.value = list;
+                const openReports = () => {
+                    playSound('click');
+                    screen.value = 'reports';
                 };
 
-                const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+                const clearReports = async () => {
+                    if (!parentUser.value || !confirm("Adakah anda pasti mahu memadamkan rekod laporan ini?")) return;
+                    playSound('wrong');
+                    try {
+                        if (user.value) {
+                            // If a child is playing, only delete reports belonging to this specific child
+                            for (const report of reportList.value) {
+                                if (report.studentName === user.value.toLowerCase()) {
+                                    await remove(dbRef(fDatabase, `users/${parentUser.value}/reports/${report.id}`));
+                                }
+                            }
+                        } else {
+                            // Parent clears all family history completely
+                            await remove(dbRef(fDatabase, `users/${parentUser.value}/reports`));
+                        }
+                    } catch(e) {
+                        alert("Gagal memadam rekod: " + e.message);
+                    }
+                };
 
-                const getDigitAt = (num, pos) => {
-                    const str = String(num);
-                    if (pos >= str.length) return '';
-                    return str.charAt(str.length - 1 - pos);
+                const generateQuestions = () => {
+                    questions.value = [];
+                    usedQuestionCombos.value.clear();
+                    
+                    let attempts = 0;
+                    while (questions.value.length < config.value.totalQuestions && attempts < 1500) {
+                        attempts++;
+                        let num1 = 0, num2 = 0;
+                        const diff = config.value.difficulty;
+                        const op = config.value.operation;
+
+                        if (op === 'Tambah' || op === 'Tolak') {
+                            if (diff === 'Mudah') {
+                                num1 = Math.floor(Math.random() * 90) + 10; 
+                                num2 = Math.floor(Math.random() * 9) + 1;   
+                            } else if (diff === 'Sederhana') {
+                                num1 = Math.floor(Math.random() * 900) + 100; 
+                                num2 = Math.floor(Math.random() * 90) + 10;   
+                            } else {
+                                num1 = Math.floor(Math.random() * 9000) + 1000; 
+                                num2 = Math.floor(Math.random() * 900) + 100;   
+                            }
+                            if (op === 'Tolak' && num1 < num2) {
+                                let temp = num1; num1 = num2; num2 = temp;
+                            }
+                        } else if (op === 'Darab') {
+                            if (diff === 'Mudah') {
+                                num1 = Math.floor(Math.random() * 9) + 1; 
+                                num2 = Math.floor(Math.random() * 9) + 1; 
+                            } else if (diff === 'Sederhana') {
+                                num1 = Math.floor(Math.random() * 90) + 10; 
+                                num2 = Math.floor(Math.random() * 9) + 1;  
+                            } else {
+                                num1 = Math.floor(Math.random() * 900) + 100; 
+                                num2 = Math.floor(Math.random() * 9) + 1;   
+                            }
+                        } else if (op === 'Bahagi') {
+                            if (diff === 'Mudah') {
+                                num2 = Math.floor(Math.random() * 8) + 2; 
+                                let quotient = Math.floor(Math.random() * 4) + 11; 
+                                num1 = num2 * quotient;
+                                if (num1 > 99) {
+                                    quotient = Math.floor(99 / num2);
+                                    num1 = num2 * quotient;
+                                }
+                            } else if (diff === 'Sederhana') {
+                                num2 = Math.floor(Math.random() * 8) + 2; 
+                                num1 = Math.floor(Math.random() * 89) + 10; 
+                                if (num1 % num2 === 0) {
+                                    num1 = (num1 + 1) > 99 ? num1 - 1 : num1 + 1;
+                                }
+                            } else {
+                                num2 = Math.floor(Math.random() * 8) + 2; 
+                                num1 = Math.floor(Math.random() * 899) + 100; 
+                                if (num1 % num2 === 0) {
+                                    num1 = (num1 + 1) > 999 ? num1 - 1 : num1 + 1;
+                                }
+                            }
+                        }
+
+                        const key = op === 'Tambah' || op === 'Darab' 
+                            ? [num1, num2].sort((a,b)=>a-b).join('-')
+                            : `${num1}-${num2}`;
+
+                        if (!usedQuestionCombos.value.has(key)) {
+                            usedQuestionCombos.value.add(key);
+                            questions.value.push({ 
+                                num1, 
+                                num2, 
+                                isCorrect: false, 
+                                studentAnsStr: '', 
+                                correctAnsStr: '',
+                                wasCorrected: false
+                            });
+                        }
+                    }
                 };
 
                 const startSession = () => {
-                    playSound('click');
+                    // Fallback to absolute generic if guest profile is operational
+                    if (!user.value) user.value = "Utama";
+                    playSound('correct');
                     generateQuestions();
                     currentQuestionIndex.value = 0;
                     score.value = 0;
-                    secondsElapsed.value = 0;
+                    correctionIndex.value = null;
+                    setupQuestionLayout();
                     screen.value = 'gameplay';
-                    resetInputBoards();
-                    
-                    if(timer.value) clearInterval(timer.value);
-                    timer.value = setInterval(() => { secondsElapsed.value++; }, 1000);
+                    startTimer();
                 };
 
-                const resetInputBoards = () => {
-                    answerArray.value = {};
-                    carryArray.value = {};
-                    borrowArray.value = {};
-                    divisionInputs.value = { quotientArray: {}, remainderArray: {}, finalRemainder: '' };
-                    
-                    if (config.value.operation === 'Bahagi') {
-                        activeTarget.value = { type: 'div_quotient_arr', index: 0 };
-                    } else {
-                        activeTarget.value = { type: 'answer', index: 0 };
-                    }
-                };
+                const setupQuestionLayout = () => {
+                    const op = config.value.operation;
+                    activeTarget.value = { type: 'answer', index: 0 };
 
-                const pressKey = (key) => {
-                    playSound('click');
-                    const target = activeTarget.value;
-                    
-                    if (target.type === 'div_final_remainder') {
-                        if (key === 'CLEAR') { divisionInputs.value.finalRemainder = ''; }
-                        else if (key === 'BACKSPACE') { divisionInputs.value.finalRemainder = divisionInputs.value.finalRemainder.slice(0, -1); }
-                        else { divisionInputs.value.finalRemainder += String(key); }
-                        return;
-                    }
+                    answerArray.value = Array(maxColumns.value).fill('');
+                    carryArray.value = Array(maxColumns.value).fill('');
+                    borrowArray.value = Array(maxColumns.value).fill('');
 
-                    let currentDict;
-                    if (target.type === 'answer') currentDict = answerArray;
-                    else if (target.type === 'carry') currentDict = carryArray;
-                    else if (target.type === 'borrow') currentDict = borrowArray;
-                    else if (target.type === 'div_quotient_arr') {
-                        if (key === 'CLEAR') { divisionInputs.value.quotientArray[target.index] = ''; }
-                        else if (key === 'BACKSPACE') { divisionInputs.value.quotientArray[target.index] = ''; }
-                        else { divisionInputs.value.quotientArray[target.index] = String(key); }
-                        return;
-                    }
-                    else if (target.type === 'div_remainder_arr') {
-                        if (key === 'CLEAR') { divisionInputs.value.remainderArray[target.index] = ''; }
-                        else if (key === 'BACKSPACE') { divisionInputs.value.remainderArray[target.index] = ''; }
-                        else { divisionInputs.value.remainderArray[target.index] = String(key); }
-                        return;
-                    }
-
-                    if (key === 'CLEAR') { delete currentDict.value[target.index]; }
-                    else if (key === 'BACKSPACE') { delete currentDict.value[target.index]; }
-                    else { currentDict.value[target.index] = String(key); }
-                };
-
-                const triggerBorrow = (index) => {
-                    playSound('click');
-                    activeTarget.value = { type: 'borrow', index: index };
-                };
-
-                const buildStudentAnswerString = () => {
-                    if (config.value.operation === 'Bahagi') {
+                    if (op === 'Bahagi') {
                         const len = String(currentQuestion.value.num1).length;
-                        let qStr = '';
-                        for (let i = 0; i < len; i++) {
-                            qStr += (divisionInputs.value.quotientArray[i] !== undefined && divisionInputs.value.quotientArray[i] !== '') ? divisionInputs.value.quotientArray[i] : '0';
-                        }
-                        const baki = divisionInputs.value.finalRemainder || '0';
-                        return parseInt(qStr, 10) + ` (Baki: ${baki})`;
-                    } else {
-                        let ansStr = '';
-                        const keys = Object.keys(answerArray.value).map(Number).sort((a,b) => b-a);
-                        if(keys.length === 0) return '0';
-                        for (let k of keys) { ansStr += answerArray.value[k]; }
-                        return String(parseInt(ansStr, 10) || 0);
+                        divisionInputs.value = {
+                            quotientArray: Array(len).fill(''),
+                            remainderArray: Array(len).fill(''),
+                            finalRemainder: ''
+                        };
+                        activeTarget.value = { type: 'div_quotient_arr', index: 0 };
                     }
-                };
-
-                const submitAnswer = async () => {
-                    const isGameplay = (screen.value === 'gameplay');
-                    const q = currentQuestion.value;
-                    
-                    let isCorrect = false;
-                    let correctStr = '';
-                    const studentAnsStr = buildStudentAnswerString();
-
-                    if (config.value.operation === 'Tambah') {
-                        const real = q.num1 + q.num2;
-                        isCorrect = (parseInt(studentAnsStr, 10) === real);
-                        correctStr = String(real);
-                    } else if (config.value.operation === 'Tolak') {
-                        const real = q.num1 - q.num2;
-                        isCorrect = (parseInt(studentAnsStr, 10) === real);
-                        correctStr = String(real);
-                    } else if (config.value.operation === 'Darab') {
-                        const real = q.num1 * q.num2;
-                        isCorrect = (parseInt(studentAnsStr, 10) === real);
-                        correctStr = String(real);
-                    } else if (config.value.operation === 'Bahagi') {
-                        const qReal = Math.floor(q.num1 / q.num2);
-                        const rReal = q.num1 % q.num2;
-                        const studentQ = parseInt(studentAnsStr.split(' ')[0], 10) || 0;
-                        const studentR = parseInt(divisionInputs.value.finalRemainder, 10) || 0;
-                        isCorrect = (qReal === studentQ && rReal === studentR);
-                        correctStr = qReal + ` (Baki: ${rReal})`;
-                    }
-
-                    if (isGameplay) {
-                        q.isCorrect = isCorrect;
-                        q.studentAnsStr = studentAnsStr;
-                        q.correctAnsStr = correctStr;
-                        
-                        if (isCorrect) { score.value++; playSound('correct'); }
-                        else { playSound('wrong'); }
-
-                        if (currentQuestionIndex.value + 1 < config.value.totalQuestions) {
-                            currentQuestionIndex.value++;
-                            resetInputBoards();
-                        } else {
-                            // Tamat Sesi Kuiz
-                            clearInterval(timer.value);
-                            finalTimeDisplay.value = formattedTime.value;
-                            screen.value = 'results';
-                            
-                            // Bina item laporan & pos ke Firebase
-                            const d = new Date();
-                            const rItem = {
-                                date: `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`,
-                                operation: config.value.operation,
-                                difficulty: config.value.difficulty,
-                                score: score.value,
-                                total: config.value.totalQuestions,
-                                accuracy: Math.round((score.value / config.value.totalQuestions) * 100),
-                                duration: secondsElapsed.value,
-                                durationStr: finalTimeDisplay.value
-                            };
-                            await saveReportToFirebase(rItem);
-                            // Muat turun data terkini agar report & dashboard parent terkemas kini
-                            await syncParentDataSilently();
-                        }
-                    } else {
-                        // Mod Pembetulan
-                        if (isCorrect) {
-                            q.isCorrect = true;
-                            q.wasCorrected = true;
-                            q.studentAnsStr = studentAnsStr;
-                            playSound('correct');
-                            alert("✨ Syabas! Pembetulan anda tepat!");
-                            screen.value = 'results';
-                        } else {
-                            playSound('wrong');
-                            alert("❌ Masih kurang tepat, sila cuba lagi.");
-                        }
-                    }
-                };
-
-                const syncParentDataSilently = async () => {
-                    if (!currentParentKey.value) return;
-                    try {
-                        const snapshot = await get(ref(db, 'users/' + currentParentKey.value));
-                        if(snapshot.exists()) {
-                            parentData.value = snapshot.value;
-                        }
-                    } catch(e){}
                 };
 
                 const startCorrection = (index) => {
                     playSound('click');
                     correctionIndex.value = index;
                     screen.value = 'correction';
-                    resetInputBoards();
+                    setupQuestionLayout();
                 };
 
                 const exitCorrection = () => {
                     playSound('click');
+                    correctionIndex.value = null;
+                    screen.value = 'results';
+                };
+
+                const triggerBorrow = (idx) => {
+                    if (config.value.operation !== 'Tolak') return;
+                    playSound('click');
+                    activeTarget.value = { type: 'borrow', index: idx };
+                };
+
+                const pressKey = (key) => {
+                    playSound('click');
+                    const target = activeTarget.value;
+                    const op = config.value.operation;
+                    const digitCount = String(currentQuestion.value.num1).length;
+                    
+                    if (key === 'C') {
+                        clearActiveTarget();
+                        return;
+                    }
+                    if (key === 'BACKSPACE') {
+                        backspaceActiveTarget();
+                        return;
+                    }
+
+                    if (target.type === 'answer') {
+                        answerArray.value[target.index] = key;
+                        if ((op === 'Tambah' || op === 'Darab') && target.index < maxColumns.value - 1) {
+                            activeTarget.value = { type: 'carry', index: target.index + 1 };
+                        } else if (target.index < maxColumns.value - 1) {
+                            activeTarget.value = { type: 'answer', index: target.index + 1 };
+                        }
+                    } else if (target.type === 'carry') {
+                        carryArray.value[target.index] = key;
+                        activeTarget.value = { type: 'answer', index: target.index };
+                    } else if (target.type === 'borrow') {
+                        let currentVal = String(borrowArray.value[target.index] || '');
+                        if (currentVal.length < 2) {
+                            borrowArray.value[target.index] = currentVal + key;
+                        }
+                    } 
+                    else if (target.type === 'div_quotient_arr') {
+                        divisionInputs.value.quotientArray[target.index] = key;
+                        if (target.index < digitCount - 1) {
+                            activeTarget.value = { type: 'div_remainder_arr', index: target.index };
+                        } else {
+                            activeTarget.value = { type: 'div_final_remainder', index: 0 };
+                        }
+                    } else if (target.type === 'div_remainder_arr') {
+                        divisionInputs.value.remainderArray[target.index] = key;
+                        if (target.index + 1 < digitCount) {
+                            activeTarget.value = { type: 'div_quotient_arr', index: target.index + 1 };
+                        }
+                    } else if (target.type === 'div_final_remainder') {
+                        divisionInputs.value.finalRemainder = key;
+                    }
+                };
+
+                const clearActiveTarget = () => {
+                    const target = activeTarget.value;
+                    if (target.type === 'answer') answerArray.value[target.index] = '';
+                    if (target.type === 'carry') carryArray.value[target.index] = '';
+                    if (target.type === 'borrow') borrowArray.value[target.index] = '';
+                    if (target.type === 'div_quotient_arr') divisionInputs.value.quotientArray[target.index] = '';
+                    if (target.type === 'div_remainder_arr') divisionInputs.value.remainderArray[target.index] = '';
+                    if (target.type === 'div_final_remainder') divisionInputs.value.finalRemainder = '';
+                };
+
+                const backspaceActiveTarget = () => {
+                    const target = activeTarget.value;
+                    const op = config.value.operation;
+
+                    if (target.type === 'answer') {
+                        answerArray.value[target.index] = '';
+                        if (target.index > 0) {
+                            if (op === 'Tambah' || op === 'Darab') {
+                                activeTarget.value = { type: 'carry', index: target.index };
+                            } else {
+                                activeTarget.value = { type: 'answer', index: target.index - 1 };
+                            }
+                        }
+                    }
+                    if (target.type === 'carry') {
+                        carryArray.value[target.index] = '';
+                        activeTarget.value = { type: 'answer', index: target.index - 1 };
+                    }
+                    if (target.type === 'borrow') {
+                        let val = String(borrowArray.value[target.index] || '');
+                        borrowArray.value[target.index] = val.substring(0, val.length - 1);
+                    }
+                    if (target.type === 'div_quotient_arr') {
+                        divisionInputs.value.quotientArray[target.index] = '';
+                        if (target.index > 0) {
+                            activeTarget.value = { type: 'div_remainder_arr', index: target.index - 1 };
+                        }
+                    }
+                    if (target.type === 'div_remainder_arr') {
+                        divisionInputs.value.remainderArray[target.index] = '';
+                        activeTarget.value = { type: 'div_quotient_arr', index: target.index };
+                    }
+                    if (target.type === 'div_final_remainder') {
+                        divisionInputs.value.finalRemainder = '';
+                        const len = String(currentQuestion.value.num1).length;
+                        activeTarget.value = { type: 'div_quotient_arr', index: len - 1 };
+                    }
+                };
+
+                const submitAnswer = () => {
+                    const op = config.value.operation;
+                    const q = currentQuestion.value;
+                    let isCorrect = false;
+                    let studentAnsStr = '';
+                    let correctAnsStr = '';
+
+                    if (op === 'Tambah' || op === 'Tolak' || op === 'Darab') {
+                        const submittedString = [...answerArray.value].reverse().join('').trim();
+                        const submittedAns = parseInt(submittedString, 10) || 0;
+                        studentAnsStr = submittedString || '0';
+                        
+                        let actualAns = 0;
+                        if (op === 'Tambah') actualAns = q.num1 + q.num2;
+                        if (op === 'Tolak') actualAns = q.num1 - q.num2;
+                        if (op === 'Darab') actualAns = q.num1 * q.num2;
+                        correctAnsStr = String(actualAns);
+
+                        if (submittedAns === actualAns) isCorrect = true;
+                    } else if (op === 'Bahagi') {
+                        const actualQuotient = Math.floor(q.num1 / q.num2);
+                        const actualRemainder = q.num1 % q.num2;
+
+                        const submittedQuotientStr = divisionInputs.value.quotientArray.join('').trim();
+                        const sQuotient = parseInt(submittedQuotientStr, 10) || 0;
+                        const sRemainder = parseInt(divisionInputs.value.finalRemainder, 10) || 0;
+
+                        studentAnsStr = `${sQuotient}${sRemainder > 0 ? ' Baki ' + sRemainder : ''}`;
+                        correctAnsStr = `${actualQuotient}${actualRemainder > 0 ? ' Baki ' + actualRemainder : ''}`;
+
+                        if (sQuotient === actualQuotient && sRemainder === actualRemainder) {
+                            isCorrect = true;
+                        }
+                    }
+
+                    if (screen.value === 'correction') {
+                        if (isCorrect) {
+                            playSound('correct');
+                            alert("Syabas! Pembetulan anda betul! 🎉");
+                            
+                            const idx = correctionIndex.value;
+                            questions.value[idx].isCorrect = true;
+                            questions.value[idx].studentAnsStr = studentAnsStr;
+                            questions.value[idx].wasCorrected = true; 
+                            
+                            exitCorrection();
+                        } else {
+                            playSound('wrong');
+                            alert("Alamak, jawapan pembetulan masih kurang tepat. Cuba lagi ya! 💪");
+                        }
+                        return;
+                    }
+
+                    questions.value[currentQuestionIndex.value].isCorrect = isCorrect;
+                    questions.value[currentQuestionIndex.value].studentAnsStr = studentAnsStr;
+                    questions.value[currentQuestionIndex.value].correctAnsStr = correctAnsStr;
+
+                    if (isCorrect) {
+                        score.value += 1;
+                        playSound('correct');
+                    } else {
+                        playSound('wrong');
+                    }
+
+                    if (currentQuestionIndex.value < config.value.totalQuestions - 1) {
+                        currentQuestionIndex.value += 1;
+                        setupQuestionLayout();
+                    } else {
+                        endSession();
+                    }
+                };
+
+                const startTimer = () => {
+                    timerSeconds.value = 0;
+                    timerInterval.value = setInterval(() => {
+                        timerSeconds.value += 1;
+                    }, 1000);
+                };
+
+                const stopTimer = () => {
+                    if (timerInterval.value) {
+                        clearInterval(timerInterval.value);
+                        timerInterval.value = null;
+                    }
+                };
+
+                const endSession = async () => {
+                    stopTimer();
+                    const mins = Math.floor(timerSeconds.value / 60);
+                    const secs = timerSeconds.value % 60;
+                    
+                    let durationStr = `${secs}s`;
+                    if (mins > 0) durationStr = `${mins}m ${secs}s`;
+                    finalTimeDisplay.value = mins > 0 ? `${mins} minit ${secs} saat` : `${secs} saat`;
+
+                    const now = new Date();
+                    const dateStr = `${now.getDate()}/${now.getMonth()+1} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+                    
+                    const newRecord = {
+                        studentName: user.value.toLowerCase(),
+                        operation: config.value.operation,
+                        difficulty: config.value.difficulty,
+                        score: score.value,
+                        total: config.value.totalQuestions,
+                        accuracy: Math.round((score.value / config.value.totalQuestions) * 100),
+                        durationSecs: timerSeconds.value,
+                        durationStr: durationStr,
+                        date: dateStr
+                    };
+
+                    // Save metrics inside Cloud Realtime Database node instead of LocalStorage
+                    if (parentUser.value) {
+                        try {
+                            const reportsRef = dbRef(fDatabase, `users/${parentUser.value}/reports`);
+                            await push(reportsRef, newRecord);
+                        } catch (e) {
+                            console.log("Database persistent synchronization error:", e);
+                        }
+                    }
+
                     screen.value = 'results';
                 };
 
@@ -970,32 +1206,27 @@
 
                 const goToMenu = () => {
                     playSound('click');
-                    if (currentUser.value) screen.value = 'menu';
-                    else if (currentParent.value) screen.value = 'parent-dashboard';
-                    else screen.value = 'welcome';
-                };
-
-                const openReports = async () => {
-                    playSound('click');
-                    loading.value = true;
-                    await syncParentDataSilently(); // Ambil data terbaharu dari cloud
-                    loading.value = false;
-                    screen.value = 'reports';
+                    if (user.value) {
+                        screen.value = 'menu';
+                    } else if (parentUser.value) {
+                        screen.value = 'parentDashboard';
+                    } else {
+                        screen.value = 'login-selection';
+                    }
                 };
 
                 return {
-                    screen, parentEmailInput, childPinInput, newChildName, loading,
-                    currentParent, currentUser, parentData, foundParentAccount,
-                    config, questions, currentQuestionIndex, score, formattedTime, finalTimeDisplay,
-                    currentAccuracy, reportList, reportSummary,
-                    activeTarget, answerArray, carryArray, borrowArray, divisionInputs, maxColumns, currentQuestion,
-                    correctionIndex,
-                    loginParent, generateNewPin, addChildProfile, verifyChildPin, selectChildProfile, logout,
-                    changeOperation, startSession, pressKey, triggerBorrow, submitAnswer,
-                    startCorrection, exitCorrection, retrySession, goToMenu, openReports, playSound, getDigitAt
+                    user, parentUser, screen, childPinInput, parentEmail, parentPassword, isRegisterMode, authLoading,
+                    newChildName, childProfiles, reportList, filteredReportList, config, score, currentQuestionIndex,
+                    currentQuestion, maxColumns, answerArray, carryArray, borrowArray, divisionInputs, activeTarget,
+                    formattedTime, currentAccuracy, finalTimeDisplay, reportSummary, questions, correctionIndex,
+                    handleParentAuth, loginAsChild, addChildProfile, regenerateChildPin, deleteChildProfile, getChildStats,
+                    openParentDashboard, logout, getDigitAt, changeOperation, startSession, triggerBorrow, pressKey, 
+                    submitAnswer, retrySession, goToMenu, playSound, openReports, clearReports, startCorrection, exitCorrection
                 };
             }
         }).mount('#app');
     </script>
+
 </body>
 </html>
