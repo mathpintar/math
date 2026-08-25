@@ -493,11 +493,10 @@
                                     <input type="text" readonly :value="answerArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answer', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
-                            <!-- Baris Jawapan 2 (Darab PULUH - Kotak kosong dimatikan di sebelah KANAN, bermula kotak kedua dari kanan) -->
+                            <!-- Baris Jawapan 2 (Darab PULUH - Dikemas kini untuk Mod Pro: Semua Lajur Ada Kotak Jawapan) -->
                             <div class="flex mt-1.5 border-b-2 border-slate-800 pb-2">
                                 <div v-for="colIdx in maxColumns" :key="'ans2-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
-                                    <div v-if="colIdx === maxColumns" class="w-11 h-11 flex items-center justify-center text-slate-400 font-bold">0</div>
-                                    <input v-else type="text" readonly :value="answerArrayRow2[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answerRow2', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answerRow2' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
+                                    <input type="text" readonly :value="answerArrayRow2[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answerRow2', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answerRow2' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
                             <!-- Baris Jawapan Akhir (Hasil Tambah Baris 1 & 2) -->
@@ -1270,7 +1269,6 @@
 
                     if (target.type === 'answer') {
                         answerArray.value[target.index] = key;
-                        // Logik Automatik Kotak Baki Atas sekiranya jawapan lebih dari 9
                         if (parseInt(key, 10) > 9 && target.index + 1 < maxColumns.value) {
                             carryArray.value[target.index + 1] = String(Math.floor(parseInt(key, 10) / 10));
                             answerArray.value[target.index] = String(parseInt(key, 10) % 10);
@@ -1279,7 +1277,7 @@
                         if (target.index < maxColumns.value - 1) {
                             activeTarget.value = { type: 'answer', index: target.index + 1 };
                         } else if (op === 'Darab') {
-                            activeTarget.value = { type: 'answerRow2', index: maxColumns.value - 2 };
+                            activeTarget.value = { type: 'answerRow2', index: 0 };
                         }
                     } else if (target.type === 'answerRow2') {
                         answerArrayRow2.value[target.index] = key;
@@ -1291,7 +1289,7 @@
                         if (target.index < maxColumns.value - 1) {
                             activeTarget.value = { type: 'answerRow2', index: target.index + 1 };
                         } else {
-                            activeTarget.value = { type: 'answerFinal', index: maxColumns.value - 1 };
+                            activeTarget.value = { type: 'answerFinal', index: 0 };
                         }
                     } else if (target.type === 'answerFinal') {
                         answerArrayFinal.value[target.index] = key;
@@ -1339,7 +1337,7 @@
                         if (t.index > 0) activeTarget.value = { type: 'answer', index: t.index - 1 };
                     } else if (t.type === 'answerRow2') {
                         answerArrayRow2.value[t.index] = '';
-                        if (t.index > maxColumns.value - 2) activeTarget.value = { type: 'answerRow2', index: t.index - 1 };
+                        if (t.index > 0) activeTarget.value = { type: 'answerRow2', index: t.index - 1 };
                     } else if (t.type === 'answerFinal') {
                         answerArrayFinal.value[t.index] = '';
                         if (t.index > 0) activeTarget.value = { type: 'answerFinal', index: t.index - 1 };
