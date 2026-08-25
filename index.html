@@ -493,11 +493,11 @@
                                     <input type="text" readonly :value="answerArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answer', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
-                            <!-- Baris Jawapan 2 (Darab PULUH - Bermula kotak kedua dari kanan) -->
+                            <!-- Baris Jawapan 2 (Darab PULUH - Kotak kosong dimatikan di sebelah KANAN, bermula kotak kedua dari kanan) -->
                             <div class="flex mt-1.5 border-b-2 border-slate-800 pb-2">
                                 <div v-for="colIdx in maxColumns" :key="'ans2-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
-                                    <input v-if="colIdx > 1" type="text" readonly :value="answerArrayRow2[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answerRow2', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answerRow2' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
-                                    <div v-else class="w-11 h-11 flex items-center justify-center text-slate-400 font-bold">0</div>
+                                    <div v-if="colIdx === maxColumns" class="w-11 h-11 flex items-center justify-center text-slate-400 font-bold">0</div>
+                                    <input v-else type="text" readonly :value="answerArrayRow2[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answerRow2', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answerRow2' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
                             <!-- Baris Jawapan Akhir (Hasil Tambah Baris 1 & 2) -->
@@ -1170,7 +1170,7 @@
                         } else if (op === 'Darab') {
                             if (diff === 'Mudah') { num1 = Math.floor(Math.random() * 9) + 1; num2 = Math.floor(Math.random() * 9) + 1; } 
                             else if (diff === 'Sederhana') { num1 = Math.floor(Math.random() * 90) + 10; num2 = Math.floor(Math.random() * 9) + 1; } 
-                            else { num1 = Math.floor(Math.random() * 90) + 10; num2 = Math.floor(Math.random() * 90) + 10; } // Diselaraskan untuk Pro Darab 2 digit x 2 digit
+                            else { num1 = Math.floor(Math.random() * 90) + 10; num2 = Math.floor(Math.random() * 90) + 10; } 
                         } else if (op === 'Bahagi') {
                             if (diff === 'Mudah') {
                                 num2 = Math.floor(Math.random() * 8) + 2; let quotient = Math.floor(Math.random() * 4) + 11; num1 = num2 * quotient;
@@ -1273,7 +1273,7 @@
                         if (target.index < maxColumns.value - 1) {
                             activeTarget.value = { type: 'answer', index: target.index + 1 };
                         } else if (op === 'Darab') {
-                            // Automatik beralih ke baris 2 (darab puluh) pada kotak kedua dari kanan
+                            // Beralih ke baris 2 (darab puluh) bermula pada kotak kedua dari kanan (maxColumns - 2)
                             activeTarget.value = { type: 'answerRow2', index: maxColumns.value - 2 };
                         }
                     } else if (target.type === 'answerRow2') {
@@ -1324,7 +1324,7 @@
                         if (t.index > 0) activeTarget.value = { type: 'answer', index: t.index - 1 };
                     } else if (t.type === 'answerRow2') {
                         answerArrayRow2.value[t.index] = '';
-                        if (t.index > 1) activeTarget.value = { type: 'answerRow2', index: t.index - 1 };
+                        if (t.index > maxColumns.value - 2) activeTarget.value = { type: 'answerRow2', index: t.index - 1 };
                     } else if (t.type === 'answerFinal') {
                         answerArrayFinal.value[t.index] = '';
                         if (t.index > 0) activeTarget.value = { type: 'answerFinal', index: t.index - 1 };
@@ -1357,7 +1357,6 @@
                         correctAnsStr = String(actualAns);
                         if (submittedAns === actualAns) isCorrect = true;
                     } else if (op === 'Darab') {
-                        // Semak hasil tambah akhir sebagai jawapan mutlak darab
                         const finalString = [...answerArrayFinal.value].reverse().join('').trim();
                         const submittedAns = parseInt(finalString, 10) || 0;
                         studentAnsStr = finalString || '0';
