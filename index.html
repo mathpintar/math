@@ -496,7 +496,7 @@
                             <!-- Baris Jawapan 2 (Darab Puluh - Kotak pertama dari kanan dikunci kosong, bermula dari kotak kedua) -->
                             <div class="flex mt-1.5 border-b-2 border-slate-800 pb-2">
                                 <div v-for="colIdx in maxColumns" :key="'ans2-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
-                                    <input v-if="colIdx === 1" type="text" readonly value="" disabled class="w-11 h-11 text-center border-2 border-slate-200 rounded-xl text-2xl font-black bg-slate-100 cursor-not-allowed">
+                                    <input v-if="colIdx === maxColumns" type="text" readonly value="" disabled class="w-11 h-11 text-center border-2 border-slate-200 rounded-xl text-2xl font-black bg-slate-100 cursor-not-allowed">
                                     <input v-else type="text" readonly :value="answerArrayRow2[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answerRow2', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answerRow2' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
@@ -1278,7 +1278,7 @@
                         if (target.index < maxColumns.value - 1) {
                             activeTarget.value = { type: 'answer', index: target.index + 1 };
                         } else if (op === 'Darab') {
-                            activeTarget.value = { type: 'answerRow2', index: 1 };
+                            activeTarget.value = { type: 'answerRow2', index: 0 };
                         }
                     } else if (target.type === 'answerRow2') {
                         answerArrayRow2.value[target.index] = key;
@@ -1287,7 +1287,7 @@
                             answerArrayRow2.value[target.index] = String(parseInt(key, 10) % 10);
                         }
 
-                        if (target.index < maxColumns.value - 1) {
+                        if (target.index < maxColumns.value - 2) {
                             activeTarget.value = { type: 'answerRow2', index: target.index + 1 };
                         } else {
                             activeTarget.value = { type: 'answerFinal', index: 0 };
@@ -1338,7 +1338,7 @@
                         if (t.index > 0) activeTarget.value = { type: 'answer', index: t.index - 1 };
                     } else if (t.type === 'answerRow2') {
                         answerArrayRow2.value[t.index] = '';
-                        if (t.index > 1) activeTarget.value = { type: 'answerRow2', index: t.index - 1 };
+                        if (t.index > 0) activeTarget.value = { type: 'answerRow2', index: t.index - 1 };
                     } else if (t.type === 'answerFinal') {
                         answerArrayFinal.value[t.index] = '';
                         if (t.index > 0) activeTarget.value = { type: 'answerFinal', index: t.index - 1 };
