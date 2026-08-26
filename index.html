@@ -474,7 +474,7 @@
                         </div>
                     </div>
 
-                    <!-- DARAB (DUA BARIS JAWAPAN) -->
+                    <!-- DARAB (DUA BARIS JAWAPAN - 5 KOTAK TETAP) -->
                     <div v-if="config.operation === 'Darab'" class="flex items-center justify-center relative">
                         <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[145px]">×</div>
                         <div class="flex flex-col items-center">
@@ -487,23 +487,23 @@
                                     <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800 border-b-4 border-slate-800 pb-1">{{ getDigitAt(currentQuestion.num2, maxColumns - colIdx) }}</div>
                                 </div>
                             </div>
-                            <!-- Baris Jawapan 1 (Darab Sa) -->
+                            <!-- Baris Jawapan 1 (5 Kotak) -->
                             <div class="flex mt-2">
-                                <div v-for="colIdx in maxColumns" :key="'ans1-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
-                                    <input type="text" readonly :value="answerArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answer', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
+                                <div v-for="colIdx in 5" :key="'ans1-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
+                                    <input type="text" readonly :value="answerArray[5 - colIdx] || ''" @click="activeTarget = {type: 'answer', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
-                            <!-- Baris Jawapan 2 (Darab Puluh - Kotak pertama dari kanan dikunci kosong, bermula dari kotak kedua) -->
+                            <!-- Baris Jawapan 2 (5 Kotak - Kotak pertama dari kanan dikunci kosong, bermula dari kotak kedua) -->
                             <div class="flex mt-1.5 border-b-2 border-slate-800 pb-2">
-                                <div v-for="colIdx in maxColumns" :key="'ans2-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
-                                    <input v-if="colIdx === maxColumns" type="text" readonly value="" disabled class="w-11 h-11 text-center border-2 border-slate-200 rounded-xl text-2xl font-black bg-slate-100 cursor-not-allowed">
-                                    <input v-else type="text" readonly :value="answerArrayRow2[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answerRow2', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answerRow2' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
+                                <div v-for="colIdx in 5" :key="'ans2-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
+                                    <input v-if="colIdx === 5" type="text" readonly value="" disabled class="w-11 h-11 text-center border-2 border-slate-200 rounded-xl text-2xl font-black bg-slate-100 cursor-not-allowed">
+                                    <input v-else type="text" readonly :value="answerArrayRow2[5 - colIdx] || ''" @click="activeTarget = {type: 'answerRow2', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'answerRow2' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
-                            <!-- Baris Jawapan Akhir (Hasil Tambah Baris 1 & 2) -->
+                            <!-- Baris Jawapan Akhir (Hasil Tambah Baris 1 & 2 - 5 Kotak) -->
                             <div class="flex mt-2">
-                                <div v-for="colIdx in maxColumns" :key="'ansFinal-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
-                                    <input type="text" readonly :value="answerArrayFinal[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answerFinal', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answerFinal' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-emerald-500 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-emerald-700 focus:outline-none transition-all shadow-sm cursor-pointer">
+                                <div v-for="colIdx in 5" :key="'ansFinal-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
+                                    <input type="text" readonly :value="answerArrayFinal[5 - colIdx] || ''" @click="activeTarget = {type: 'answerFinal', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'answerFinal' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-emerald-500 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-emerald-700 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
                         </div>
@@ -1229,9 +1229,17 @@
                 const setupQuestionLayout = () => {
                     const op = config.value.operation;
                     activeTarget.value = { type: 'answer', index: 0 };
-                    answerArray.value = Array(maxColumns.value).fill('');
-                    answerArrayRow2.value = Array(maxColumns.value).fill('');
-                    answerArrayFinal.value = Array(maxColumns.value).fill('');
+                    
+                    if (op === 'Darab') {
+                        answerArray.value = Array(5).fill('');
+                        answerArrayRow2.value = Array(5).fill('');
+                        answerArrayFinal.value = Array(5).fill('');
+                    } else {
+                        answerArray.value = Array(maxColumns.value).fill('');
+                        answerArrayRow2.value = Array(maxColumns.value).fill('');
+                        answerArrayFinal.value = Array(maxColumns.value).fill('');
+                    }
+
                     carryArray.value = Array(maxColumns.value).fill('');
                     borrowArray.value = Array(maxColumns.value).fill('');
 
@@ -1264,42 +1272,43 @@
                     const target = activeTarget.value;
                     const op = config.value.operation;
                     const digitCount = String(currentQuestion.value.num1).length;
+                    const limitCols = op === 'Darab' ? 5 : maxColumns.value;
                     
                     if (key === 'C') { clearActiveTarget(); return; }
                     if (key === 'BACKSPACE') { backspaceActiveTarget(); return; }
 
                     if (target.type === 'answer') {
                         answerArray.value[target.index] = key;
-                        if (parseInt(key, 10) > 9 && target.index + 1 < maxColumns.value) {
+                        if (parseInt(key, 10) > 9 && target.index + 1 < limitCols) {
                             carryArray.value[target.index + 1] = String(Math.floor(parseInt(key, 10) / 10));
                             answerArray.value[target.index] = String(parseInt(key, 10) % 10);
                         }
                         
-                        if (target.index < maxColumns.value - 1) {
+                        if (target.index < limitCols - 1) {
                             activeTarget.value = { type: 'answer', index: target.index + 1 };
                         } else if (op === 'Darab') {
                             activeTarget.value = { type: 'answerRow2', index: 0 };
                         }
                     } else if (target.type === 'answerRow2') {
                         answerArrayRow2.value[target.index] = key;
-                        if (parseInt(key, 10) > 9 && target.index + 1 < maxColumns.value) {
+                        if (parseInt(key, 10) > 9 && target.index + 1 < limitCols) {
                             carryArray.value[target.index + 1] = String(Math.floor(parseInt(key, 10) / 10));
                             answerArrayRow2.value[target.index] = String(parseInt(key, 10) % 10);
                         }
 
-                        if (target.index < maxColumns.value - 2) {
+                        if (target.index < limitCols - 2) {
                             activeTarget.value = { type: 'answerRow2', index: target.index + 1 };
                         } else {
                             activeTarget.value = { type: 'answerFinal', index: 0 };
                         }
                     } else if (target.type === 'answerFinal') {
                         answerArrayFinal.value[target.index] = key;
-                        if (parseInt(key, 10) > 9 && target.index + 1 < maxColumns.value) {
+                        if (parseInt(key, 10) > 9 && target.index + 1 < limitCols) {
                             carryArray.value[target.index + 1] = String(Math.floor(parseInt(key, 10) / 10));
                             answerArrayFinal.value[target.index] = String(parseInt(key, 10) % 10);
                         }
 
-                        if (target.index < maxColumns.value - 1) {
+                        if (target.index < limitCols - 1) {
                             activeTarget.value = { type: 'answerFinal', index: target.index + 1 };
                         }
                     } else if (target.type === 'carry') {
