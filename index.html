@@ -44,6 +44,7 @@
         <!-- HEADER -->
         <header class="bg-emerald-500 text-white p-4 flex justify-between items-center shadow-md rounded-b-2xl shrink-0 z-10">
             <div class="flex items-center gap-3">
+                <!-- BUTANG TOGGLE SIDEBAR -->
                 <button v-if="user || parentUser" @click="sidebarOpen = !sidebarOpen; playSound('click')" class="text-white text-2xl focus:outline-none p-1">
                     ☰
                 </button>
@@ -51,6 +52,7 @@
             </div>
             
             <div class="flex items-center gap-2">
+                <!-- TOGGLE BAHASA -->
                 <button @click="toggleLanguage" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-2 py-1 rounded-lg border border-emerald-400 transition-colors">
                     🌐 {{ lang === 'ms' ? 'EN' : 'MS' }}
                 </button>
@@ -59,26 +61,32 @@
             </div>
         </header>
 
-        <!-- SIDEBAR -->
+        <!-- SIDEBAR / DRAWER MENU SEBELAH KIRI -->
         <div v-if="(user || parentUser) && sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 bg-black/50 z-20 transition-opacity"></div>
         
         <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed top-0 left-0 w-64 h-full bg-white shadow-2xl z-30 transition-transform duration-300 ease-in-out flex flex-col justify-between">
             <div class="p-5 space-y-6">
+                <!-- Tajuk Sidebar -->
                 <div class="flex justify-between items-center border-b pb-3">
                     <h2 class="text-xl font-black font-kids text-emerald-600">📌 {{ t('mainMenu') }}</h2>
                     <button @click="sidebarOpen = false" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
                 </div>
 
+                <!-- Pilihan Menu -->
                 <nav class="space-y-3">
+                    <!-- Profile -->
                     <button @click="openProfile" class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl font-bold text-sm transition-all">
                         <span class="text-lg">👤</span> {{ t('profile') }}
                     </button>
+
+                    <!-- Rekod Prestasi -->
                     <button @click="openReports" class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl font-bold text-sm transition-all">
                         <span class="text-lg">📊</span> {{ t('performanceRecord') }}
                     </button>
                 </nav>
             </div>
 
+            <!-- Log Keluar (Bahagian Bawah Sidebar) -->
             <div class="p-5 border-t">
                 <button @click="logout" class="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-all shadow-md active:scale-95">
                     <span>🚪</span> {{ t('logout') }}
@@ -88,12 +96,34 @@
 
         <main class="flex-grow p-4 flex flex-col justify-start items-center w-full overflow-y-auto touch-pan-y">
 
-            <!-- PAPARAN UTAMA -->
+            <!-- PAPARAN UTAMA (SEBELUM LOG MASUK) -->
             <div v-if="screen === 'login-selection'" class="w-full space-y-4 text-center my-auto">
                 <div class="bg-gradient-to-b from-emerald-400 to-emerald-500 p-5 rounded-3xl border-4 border-emerald-300 shadow-inner text-white">
                     <span class="text-5xl block mb-1">🧠</span>
                     <h2 class="text-3xl font-black font-kids">MathPintar</h2>
                     <p class="text-xs opacity-90 mt-1">{{ t('tagline') }}</p>
+                </div>
+
+                <!-- NOTIS KEMAS KINI SISTEM -->
+                <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 text-left shadow-sm space-y-2">
+                    <div class="flex items-center gap-2 text-amber-800 font-black text-sm">
+                        <span>📢</span> NOTIS KEMAS KINI SISTEM — 19/8/2026
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed">
+                        Sistem kini telah menukar No. PIN daripada 4 digit kepada 6 digit bagi mengelakkan berlakunya pertindihan No. PIN antara akaun.
+                    </p>
+                    <div class="text-xs font-bold text-slate-800 mt-1">Tindakan yang perlu dilakukan:</div>
+                    <ol class="list-decimal list-inside text-xs text-slate-700 space-y-1 pl-1">
+                        <li>Sila log masuk ke akaun Ibu Bapa.</li>
+                        <li>Jana No. PIN baharu untuk anak.</li>
+                        <li>Gunakan No. PIN terkini tersebut untuk log masuk sebagai anak dan menjawab soalan.</li>
+                    </ol>
+                    <p class="text-xs text-slate-700 mt-2">
+                        Sila pastikan anda menggunakan No. PIN yang baharu untuk mengakses akaun anak.
+                    </p>
+                    <p class="text-[11px] text-slate-600 italic mt-1">
+                        Kami memohon maaf atas segala kesulitan yang berlaku dan mengucapkan terima kasih atas kerjasama serta kefahaman ibu ayah. 🙏
+                    </p>
                 </div>
 
                 <div class="space-y-3 pt-1">
@@ -152,9 +182,20 @@
                     <p v-if="user" class="text-xs font-bold bg-emerald-600 text-yellow-200 py-1 px-3 rounded-full inline-block">{{ t('childAcc') }}</p>
                     <p v-else-if="parentUser" class="text-xs font-bold bg-purple-600 text-white py-1 px-3 rounded-full inline-block">{{ t('adminAcc') }}</p>
                 </div>
+
+                <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 text-left space-y-2 text-sm font-bold text-slate-700">
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-slate-400">{{ t('modeStatus') }}:</span>
+                        <span class="text-emerald-600 font-black">{{ user ? t('childUser') : t('parentGoogle') }}</span>
+                    </div>
+                    <div v-if="user" class="flex justify-between pt-1">
+                        <span class="text-slate-400">{{ t('totalSessions') }}:</span>
+                        <span class="text-blue-600 font-black">{{ filteredReportList.length }} {{ t('sessions') }}</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- PILIHAN MOD MODUL -->
+            <!-- PAPARAN PILIHAN MOD MODUL (SELEPAS LOG MASUK PIN) -->
             <div v-if="user && screen === 'mode-selection'" class="w-full space-y-6 my-auto text-center">
                 <div class="bg-emerald-50 border-2 border-emerald-200 p-4 rounded-2xl">
                     <p class="text-lg font-bold text-slate-700">{{ t('welcome') }}, <span class="text-emerald-600 font-black text-xl uppercase">{{ user }}</span>! 👋</p>
@@ -180,7 +221,7 @@
                 </div>
             </div>
 
-            <!-- MENU BENTUK LAZIM -->
+            <!-- PAPARAN MENU MATH BENTUK LAZIM -->
             <div v-if="user && screen === 'menu'" class="w-full space-y-5 my-auto">
                 <div class="flex justify-between items-center">
                     <button @click="screen = 'mode-selection'; playSound('click');" class="text-emerald-600 font-bold text-sm">⬅️ {{ t('selectModule') }}</button>
@@ -222,7 +263,7 @@
                 </button>
             </div>
 
-            <!-- MENU BIJAK SIFIR -->
+            <!-- PAPARAN MENU BIJAK SIFIR -->
             <div v-if="user && screen === 'sifir-menu'" class="w-full space-y-5 my-auto">
                 <div class="flex justify-between items-center">
                     <button @click="screen = 'mode-selection'; playSound('click');" class="text-amber-600 font-bold text-sm">⬅️ {{ t('selectModule') }}</button>
@@ -238,12 +279,21 @@
                     </div>
                 </div>
 
+                <div class="space-y-2">
+                    <label class="font-bold text-slate-700 text-sm block">2. {{ t('numQuestions') }}:</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button v-for="num in [10, 20, 30]" :key="num" @click="sifirConfig.totalQuestions = num; playSound('click');" :class="sifirConfig.totalQuestions === num ? 'bg-yellow-400 border-yellow-500 font-black text-slate-900' : 'bg-slate-100 border-slate-300 text-slate-700'" class="py-2 text-center font-bold text-lg rounded-xl border-b-4 transition-all">
+                            {{ num }} {{ t('questions') }}
+                        </button>
+                    </div>
+                </div>
+
                 <button @click="startSifirSession" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-black text-xl py-4 rounded-2xl shadow-lg border-b-8 border-amber-700 transition-all transform active:scale-95 uppercase tracking-wider">
                     🚀 {{ t('startTimesTable') }}
                 </button>
             </div>
 
-            <!-- GAMEPLAY SIFIR -->
+            <!-- GAMEPLAY BIJAK SIFIR -->
             <div v-if="screen === 'sifir-gameplay'" class="w-full flex flex-col justify-between items-center space-y-4 my-auto">
                 <div class="w-full bg-slate-100 p-3 rounded-2xl border-2 border-slate-200 flex justify-between items-center text-xs font-bold text-slate-600">
                     <div>{{ t('question') }}: <span class="text-amber-600 text-sm">{{ currentSifirIndex + 1 }}</span> / {{ sifirConfig.totalQuestions }}</div>
@@ -299,21 +349,115 @@
                         </button>
                     </div>
                 </div>
+
+                <div class="space-y-3">
+                    <h3 class="font-black text-sm text-slate-700 px-1">👦 {{ t('childListPin') }}</h3>
+                    <div v-if="childProfiles.length === 0" class="text-center p-6 text-xs text-slate-400 font-bold bg-slate-50 rounded-xl border border-dashed border-slate-300">
+                        {{ t('noChildProfiles') }}
+                    </div>
+                    <div v-else class="space-y-3">
+                        <div v-for="child in childProfiles" :key="child.id" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="font-black text-base text-purple-700 uppercase">{{ child.name }}</span>
+                                    <span class="ml-2 bg-yellow-100 text-yellow-800 text-[11px] font-mono px-2 py-0.5 rounded-md font-bold">PIN: {{ child.pin }}</span>
+                                </div>
+                                <div class="flex gap-1.5">
+                                    <button @click="regenerateChildPin(child.id)" :disabled="isManagingPin" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-2 py-1 rounded disabled:opacity-50">{{ t('newPin') }}</button>
+                                    <button @click="deleteChildProfile(child.id)" class="text-[10px] bg-red-50 text-red-500 font-bold px-2 py-1 rounded hover:bg-red-100">{{ t('delete') }}</button>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-2 rounded-lg text-[11px] grid grid-cols-2 gap-1 text-slate-600 font-medium">
+                                <div>{{ t('sessionsCompleted') }}: <span class="font-bold text-slate-800">{{ getChildStats(child.name).total }}</span></div>
+                                <div>{{ t('avgScore') }}: <span class="font-bold text-emerald-600">{{ getChildStats(child.name).accuracy }}%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="parentUser && screen === 'parentReports'" class="w-full space-y-4 text-left">
+                <div class="flex justify-between items-center">
+                    <button @click="screen = 'parentDashboard'; selectedChildForReport = ''; playSound('click');" class="text-pink-600 font-bold text-sm">⬅️ {{ t('backToMenu') }}</button>
+                    <span class="text-xs font-bold bg-pink-100 text-pink-700 px-3 py-1 rounded-full">{{ t('performanceRecord') }}</span>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border-2 border-pink-200 shadow-sm space-y-2">
+                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wide">{{ t('selectChildName') }}:</label>
+                    <select v-model="selectedChildForReport" @change="playSound('click')" class="w-full p-2.5 border-2 border-slate-300 rounded-xl bg-white text-sm font-bold uppercase focus:outline-none focus:border-pink-500">
+                        <option value="">-- {{ t('selectChild') }} --</option>
+                        <option v-for="child in childProfiles" :key="child.id" :value="child.name.toLowerCase()">
+                            👦 {{ child.name.toUpperCase() }}
+                        </option>
+                    </select>
+                </div>
+
+                <div v-if="selectedChildForReport" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-2 text-center">
+                        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 shadow-sm">
+                            <span class="text-[11px] text-slate-500 block font-bold">{{ t('totalSessions') }}</span>
+                            <span class="text-xl font-black text-emerald-600">{{ getChildStats(selectedChildForReport).total }}</span>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 shadow-sm">
+                            <span class="text-[11px] text-slate-500 block font-bold">{{ t('avgScore') }}</span>
+                            <span class="text-xl font-black text-blue-600">{{ getChildStats(selectedChildForReport).accuracy }}%</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-inner overflow-hidden max-h-[280px] overflow-y-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 font-black border-b border-slate-200 uppercase tracking-wider">
+                                    <th class="p-3">{{ t('opLevel') }}</th>
+                                    <th class="p-3 text-center">{{ t('score') }}</th>
+                                    <th class="p-3 text-right">{{ t('time') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                                <tr v-for="(item, idx) in parentFilteredReports" :key="'p-rep-'+idx" class="hover:bg-slate-50 transition-colors">
+                                    <td class="p-3">
+                                        <div class="font-bold text-slate-900">{{ item.operation }}</div>
+                                        <div class="text-[10px] text-slate-400 font-semibold">{{ item.difficulty }} • {{ item.date }}</div>
+                                    </td>
+                                    <td class="p-3 text-center">
+                                        <span :class="item.accuracy >= 80 ? 'text-emerald-600 bg-emerald-50' : item.accuracy >= 50 ? 'text-amber-600 bg-amber-50' : 'text-red-500 bg-red-50'" class="px-2 py-0.5 rounded-full font-bold">
+                                            {{ item.score }}/{{ item.total }} ({{ item.accuracy }}%)
+                                        </span>
+                                    </td>
+                                    <td class="p-3 text-right font-mono text-slate-500">
+                                        {{ item.durationStr }}
+                                    </td>
+                                </tr>
+                                <tr v-if="parentFilteredReports.length === 0">
+                                    <td colspan="3" class="p-8 text-center text-slate-400 font-bold">
+                                        📭 {{ t('noScoreRecord') }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="flex justify-end" v-if="parentFilteredReports.length > 0">
+                        <button @click="clearChildReports" class="text-[11px] font-bold text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg border border-red-200 transition-colors">
+                            🗑️ {{ t('clearChildRecord') }}
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- GAMEPLAY BENTUK LAZIM -->
             <div v-if="screen === 'gameplay' || screen === 'correction'" class="w-full flex flex-col justify-between items-center space-y-4">
                 <div class="w-full bg-slate-100 p-3 rounded-2xl border-2 border-slate-200 flex justify-between items-center text-xs font-bold text-slate-600">
                     <div v-if="screen === 'gameplay'">{{ t('question') }}: <span class="text-emerald-600 text-sm">{{ currentQuestionIndex + 1 }}</span> / {{ config.totalQuestions }}</div>
-                    <div v-else class="text-red-600 text-sm bg-red-50 px-2 py-0.5 rounded-lg border border-red-200 animate-pulse">🛠️ {{ t('correctionMode') }}</div>
+                    <div v-else class="text-red-600 text-sm bg-red-50 px-2 py-0.5 rounded-lg border border-red-200 animate-pulse">🛠️ {{ t('correctionMode') }} ({{ t('question') }} {{ correctionIndex + 1 }})</div>
                     <div v-if="screen === 'gameplay'" class="text-center font-mono text-sm bg-slate-800 text-yellow-400 px-3 py-1 rounded-full shadow-inner">⏱️ {{ formattedTime }}</div>
-                    <div v-if="screen === 'gameplay'">{{ t('score') }}: <span class="text-blue-600 text-sm">{{ score }}</span></div>
+                    <div v-if="screen === 'gameplay'">{{ t('score') }}: <span class="text-blue-600 text-sm">{{ score }}</span> ({{ currentAccuracy }}%)</div>
                     <button v-else @click="exitCorrection" class="bg-slate-700 text-white px-2.5 py-1 rounded-md text-[11px]">{{ t('cancel') }}</button>
                 </div>
 
                 <div class="w-full flex-grow bg-amber-50 p-6 rounded-3xl border-4 border-amber-200 shadow-inner min-h-[300px] flex justify-center items-center relative math-font">
                     
-                    <!-- OPERASI TAMBAH / TOLAK -->
+                    <!-- TAMBAH / TOLAK / BAHAGI BIASA -->
                     <div v-if="config.operation === 'Tambah' || config.operation === 'Tolak'" class="flex items-center justify-center relative">
                         <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[85px]">{{ config.operation === 'Tambah' ? '+' : '-' }}</div>
                         <div class="flex">
@@ -323,88 +467,189 @@
                                 </div>
                                 <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800">{{ getDigitAt(currentQuestion.num1, maxColumns - colIdx) }}</div>
                                 <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800 border-b-4 border-slate-800 pb-1">{{ getDigitAt(currentQuestion.num2, maxColumns - colIdx) }}</div>
-                                <div class="w-12 h-14 flex items-center justify-center pt-2">
+                                <div class="w-12 h-14 flex items-center justify-center pt-2 relative">
+                                    <!-- Kotak Jawapan -->
                                     <input type="text" readonly :value="answerArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answer', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-12 text-center border-2 rounded-xl text-3xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
+                                    <!-- Kotak Carry Tambah di Bawah (Jika Operasi Tambah) -->
+                                    <div v-if="config.operation === 'Tambah'" class="absolute -bottom-6 w-full flex justify-center">
+                                        <input type="text" readonly :value="carryBottomArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'carryBottom', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'carryBottom' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-amber-300 bg-white'" class="w-8 h-7 text-xs text-center border-2 border-dashed rounded-md font-bold text-purple-600 focus:outline-none cursor-pointer" placeholder="c">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- OPERASI DARAB PRO (KOTAK CARRY DI ATAS & BAWAH) -->
+                    <!-- DARAB (DUA BARIS JAWAPAN - 5 KOTAK TETAP) -->
                     <div v-if="config.operation === 'Darab'" class="flex items-center justify-center relative">
-                        <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[165px]">×</div>
+                        <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[145px]">×</div>
                         <div class="flex flex-col items-center">
-                            <!-- Kotak Carry di Atas Sekali untuk Darab -->
-                            <div class="flex mb-1">
-                                <div v-for="colIdx in 5" :key="'col-carry-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
-                                    <input type="text" readonly :value="carryArray[5 - colIdx] || ''" @click="activeTarget = {type: 'carry', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'carry' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-amber-300 bg-white'" class="w-10 h-9 text-base text-center border-2 border-dashed rounded-lg font-bold text-purple-600 focus:outline-none cursor-pointer">
-                                </div>
-                            </div>
                             <div class="flex">
                                 <div v-for="colIdx in 5" :key="'col-mul-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
+                                    <div class="w-12 h-10 flex items-center justify-center mb-1">
+                                        <input type="text" readonly :value="carryArray[5 - colIdx] || ''" @click="activeTarget = {type: 'carry', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'carry' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-amber-300 bg-white'" class="w-10 h-9 text-base text-center border-2 border-dashed rounded-lg font-bold text-purple-600 focus:outline-none cursor-pointer">
+                                    </div>
                                     <div class="w-12 h-12 flex items-center justify-center text-3xl font-black text-slate-800">{{ getDigitAt(currentQuestion.num1, 5 - colIdx) }}</div>
                                     <div class="w-12 h-12 flex items-center justify-center text-3xl font-black text-slate-800 border-b-4 border-slate-800 pb-1">{{ getDigitAt(currentQuestion.num2, 5 - colIdx) }}</div>
                                 </div>
                             </div>
-                            <!-- Baris Jawapan 1 -->
+                            <!-- Baris Jawapan 1 (5 Kotak) -->
                             <div class="flex mt-2">
                                 <div v-for="colIdx in 5" :key="'ans1-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
                                     <input type="text" readonly :value="answerArray[5 - colIdx] || ''" @click="activeTarget = {type: 'answer', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
-                            <!-- Baris Jawapan 2 -->
+                            <!-- Baris Jawapan 2 (5 Kotak - Kotak pertama dari kanan dikunci kosong, bermula dari kotak kedua) -->
                             <div class="flex mt-1.5 border-b-2 border-slate-800 pb-2">
                                 <div v-for="colIdx in 5" :key="'ans2-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
                                     <input v-if="colIdx === 5" type="text" readonly value="" disabled class="w-11 h-11 text-center border-2 border-slate-200 rounded-xl text-2xl font-black bg-slate-100 cursor-not-allowed">
                                     <input v-else type="text" readonly :value="answerArrayRow2[5 - colIdx] || ''" @click="activeTarget = {type: 'answerRow2', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'answerRow2' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
-                            
-                            <!-- BARIS AKHIR + KOTAK CARRY TAMBAH DI BAWAH -->
-                            <div class="flex flex-col items-center mt-2">
-                                <!-- Kotak Carry untuk Total Tambah di Bawah -->
-                                <div class="flex mb-1">
-                                    <div v-for="colIdx in 5" :key="'col-carry-final-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
-                                        <input type="text" readonly :value="carryArrayFinal[5 - colIdx] || ''" @click="activeTarget = {type: 'carryFinal', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'carryFinal' && activeTarget.index === (5 - colIdx) ? 'border-blue-500 bg-blue-100 ring-2 ring-blue-400' : 'border-blue-300 bg-white'" class="w-10 h-8 text-sm text-center border-2 border-dashed rounded-lg font-bold text-blue-600 focus:outline-none cursor-pointer">
+                            <!-- Baris Jawapan Akhir (Hasil Tambah Baris 1 & 2 - 5 Kotak dengan Kotak Carry & No Soalan) -->
+                            <div class="flex mt-3 items-center relative">
+                                <div class="flex">
+                                    <div v-for="colIdx in 5" :key="'ansFinal-'+colIdx" class="flex flex-col items-center w-14 mx-0.5 relative">
+                                        <!-- Kotak Carry untuk Total Tambah di Bawah (Darab) -->
+                                        <div class="w-12 h-8 flex items-center justify-center mb-1">
+                                            <input type="text" readonly :value="carryFinalBottomArray[5 - colIdx] || ''" @click="activeTarget = {type: 'carryFinalBottom', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'carryFinalBottom' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-amber-300 bg-white'" class="w-9 h-7 text-xs text-center border-2 border-dashed rounded-md font-bold text-purple-600 focus:outline-none cursor-pointer" placeholder="c">
+                                        </div>
+                                        <input type="text" readonly :value="answerArrayFinal[5 - colIdx] || ''" @click="activeTarget = {type: 'answerFinal', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'answerFinal' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-emerald-500 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-emerald-700 focus:outline-none transition-all shadow-sm cursor-pointer">
                                     </div>
                                 </div>
-                                <div class="flex items-center relative">
-                                    <div class="flex">
-                                        <div v-for="colIdx in 5" :key="'ansFinal-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
-                                            <input type="text" readonly :value="answerArrayFinal[5 - colIdx] || ''" @click="activeTarget = {type: 'answerFinal', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'answerFinal' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-emerald-500 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-emerald-700 focus:outline-none transition-all shadow-sm cursor-pointer">
-                                        </div>
-                                    </div>
-                                    <div class="absolute -right-12 text-slate-400 font-bold text-sm select-none">
-                                        {{ '(' + (currentQuestionIndex + 1) + ')' }}
-                                    </div>
+                                <!-- Nombor Soalan diletakkan sebaris dengan kotak jawapan akhir paling kanan -->
+                                <div class="absolute -right-12 text-slate-400 font-bold text-sm select-none">
+                                    {{ screen === 'correction' ? '(S' + (correctionIndex + 1) + ')' : '(' + (currentQuestionIndex + 1) + ')' }}
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
+                    <div v-if="config.operation === 'Bahagi'" class="flex items-center justify-center font-bold pt-6">
+                        <div class="text-4xl text-slate-700 pr-3 pt-14">{{ currentQuestion.num2 }}</div>
+                        <div class="border-t-4 border-l-4 border-slate-800 rounded-tl-2xl pl-2 pt-2 flex">
+                            <div v-for="(digit, idx) in String(currentQuestion.num1).split('')" :key="'div-col-'+idx" class="flex flex-col items-center w-16 relative mx-0.5">
+                                <div class="w-12 h-12 flex items-center justify-center mb-1">
+                                    <input type="text" readonly :value="divisionInputs.quotientArray[idx] !== undefined ? divisionInputs.quotientArray[idx] : ''" @click="activeTarget = {type: 'div_quotient_arr', index: idx}; playSound('click');" :class="activeTarget.type === 'div_quotient_arr' && activeTarget.index === idx ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none cursor-pointer">
+                                </div>
+                                <div class="w-full border-b-2 border-slate-300 my-1"></div>
+                                <div class="w-full h-14 flex items-center justify-start relative pl-1">
+                                    <span :class="{'strikethrough text-slate-400': divisionInputs.quotientArray[idx] !== '' && divisionInputs.quotientArray[idx] !== undefined}" class="text-4xl font-black text-slate-800 select-none">{{ digit }}</span>
+                                    <input v-if="idx < String(currentQuestion.num1).length - 1 && divisionInputs.quotientArray[idx] !== '' && divisionInputs.quotientArray[idx] !== undefined" type="text" readonly :value="divisionInputs.remainderArray[idx] !== undefined ? divisionInputs.remainderArray[idx] : ''" @click="activeTarget = {type: 'div_remainder_arr', index: idx}; playSound('click');" :class="activeTarget.type === 'div_remainder_arr' && activeTarget.index === idx ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-blue-400 border-solid bg-white text-blue-600'" class="w-7 h-7 text-xs text-center border-2 rounded absolute right-0 top-1 font-bold focus:outline-none cursor-pointer" placeholder="b">
+                                </div>
+                                <div v-if="idx === String(currentQuestion.num1).length - 1 && divisionInputs.quotientArray[idx] !== '' && divisionInputs.quotientArray[idx] !== undefined" class="absolute bottom-[-50px] flex flex-col items-center">
+                                    <span class="text-[9px] text-red-500 font-bold uppercase tracking-tight">{{ t('finalRemainder') }}</span>
+                                    <input type="text" readonly :value="divisionInputs.finalRemainder" @click="activeTarget = {type: 'div_final_remainder', index: 0}; playSound('click');" :class="activeTarget.type === 'div_final_remainder' ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-9 h-8 text-center border-2 rounded-lg text-base font-bold focus:outline-none cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button @click="submitAnswer" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-black text-lg py-3.5 rounded-2xl shadow-md border-b-4 border-blue-700 transition-all transform active:scale-95 uppercase">
-                    {{ t('submitSheet') }} ➡️
+                <button @click="submitAnswer" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-black text-lg py-3.5 rounded-2xl shadow-md border-b-4 border-blue-700 transition-all transform active:scale-95 active:border-b-0 uppercase">
+                    {{ screen === 'gameplay' ? t('submitSheet') + ' ➡️' : t('checkCorrection') + ' ✔️' }}
                 </button>
             </div>
 
-            <!-- HASIL / KEPUTUSAN -->
+            <!-- RESULT PAGE -->
             <div v-if="screen === 'results'" class="w-full space-y-5 py-2 my-auto">
                 <div class="bg-gradient-to-b from-yellow-300 to-amber-400 p-5 rounded-3xl shadow-xl border-4 border-white text-slate-900 relative">
                     <span class="text-5xl block mb-1">🎉</span>
                     <h2 class="text-2xl font-black uppercase tracking-wide font-kids text-amber-950">{{ t('greatJob') }}, {{ user }}!</h2>
                     <p class="font-bold text-amber-900 text-xs">{{ t('finishedPractice') }}</p>
                 </div>
+                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md p-4 space-y-2 font-bold text-sm text-left">
+                    <div class="flex justify-between border-b pb-1">
+                        <span class="text-slate-500">{{ t('correctGrade') }}:</span>
+                        <span class="text-emerald-600 font-black">{{ score }} / {{ currentSessionTotalQuestions }}</span>
+                    </div>
+                    <div class="flex justify-between border-b pb-1">
+                        <span class="text-slate-500">{{ t('scorePercent') }}:</span>
+                        <span class="text-blue-600 font-black">{{ Math.round((score / currentSessionTotalQuestions) * 100) }}%</span>
+                    </div>
+                    <div class="flex justify-between pt-0.5">
+                        <span class="text-slate-500">{{ t('timeTaken') }}:</span>
+                        <span class="text-purple-600 font-mono">{{ finalTimeDisplay }}</span>
+                    </div>
+                </div>
+
+                <div v-if="currentSessionType === 'Bentuk Lazim'" class="space-y-2 text-left">
+                    <h3 class="font-bold text-slate-700 text-sm px-1">📝 {{ t('questionChecklist') }}:</h3>
+                    <div class="space-y-2 max-h-[220px] overflow-y-auto border border-slate-200 rounded-xl p-2 bg-slate-50">
+                        <div v-for="(q, index) in questions" :key="'rev-'+index" class="bg-white p-2.5 rounded-lg border border-slate-200 flex justify-between items-center text-sm shadow-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="text-base">{{ q.isCorrect ? '✅' : '❌' }}</span>
+                                <div>
+                                    <span class="font-bold text-slate-500 text-xs">{{ t('qPrefix') }}{{ index + 1 }}:</span>
+                                    <span class="font-mono font-bold text-slate-800 ml-1">
+                                        {{ q.num1 }} {{ config.operation === 'Tambah' ? '+' : config.operation === 'Tolak' ? '-' : config.operation === 'Darab' ? '×' : '÷' }} {{ q.num2 }} = {{ q.studentAnsStr }}
+                                    </span>
+                                    <div v-if="!q.isCorrect" class="text-[11px] text-red-500 font-medium">{{ t('correctAns') }}: {{ q.correctAnsStr }}</div>
+                                    <div v-else-if="q.wasCorrected" class="text-[11px] text-emerald-600 font-bold flex items-center gap-0.5">✨ {{ t('corrected') }}!</div>
+                                </div>
+                            </div>
+                            <button v-if="!q.isCorrect" @click="startCorrection(index)" class="bg-red-500 hover:bg-red-600 text-white font-bold text-xs px-2.5 py-1.5 rounded-lg border-b-2 border-red-700 transition-all transform active:scale-95 shrink-0">🛠️ {{ t('fix') }}</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-2 gap-3 pt-2">
                     <button @click="retryCurrentSession" class="bg-amber-400 hover:bg-amber-500 text-slate-900 font-black text-base py-3 rounded-xl border-b-4 border-amber-600 transition-transform active:scale-95">🔁 {{ t('retry') }}</button>
                     <button @click="goToModeSelection" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black text-base py-3 rounded-xl border-b-4 border-emerald-700 transition-transform active:scale-95">🏠 {{ t('mainMenu') }}</button>
                 </div>
             </div>
 
+            <!-- REKOD PRESTASI ANAK -->
+            <div v-if="(user || parentUser) && screen === 'reports'" class="w-full space-y-4 text-left">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-black text-slate-800 font-kids">📊 {{ t('performanceReport') }}</h2>
+                    <button @click="goToModeSelection" class="bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded-xl text-sm font-bold transition-all">{{ t('back') }}</button>
+                </div>
+
+                <!-- JIKA IBU BAPA (DASHBOARD PILIH ANAK) -->
+                <div v-if="parentUser" class="bg-white p-4 rounded-2xl border-2 border-pink-200 shadow-sm space-y-2">
+                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wide">{{ t('selectChildName') }}:</label>
+                    <select v-model="selectedChildForReport" @change="playSound('click')" class="w-full p-2.5 border-2 border-slate-300 rounded-xl bg-white text-sm font-bold uppercase focus:outline-none focus:border-pink-500">
+                        <option value="">-- {{ t('selectChild') }} --</option>
+                        <option v-for="child in childProfiles" :key="child.id" :value="child.name.toLowerCase()">
+                            👦 {{ child.name.toUpperCase() }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-inner overflow-hidden max-h-[350px] overflow-y-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 font-black border-b border-slate-200 uppercase tracking-wider">
+                                <th class="p-3">{{ t('operation') }}</th>
+                                <th class="p-3 text-center">{{ t('score') }}</th>
+                                <th class="p-3 text-right">{{ t('time') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                            <tr v-for="(item, idx) in (parentUser ? parentFilteredReports : filteredReportList)" :key="'rep-'+idx" class="hover:bg-slate-50 transition-colors">
+                                <td class="p-3">
+                                    <div class="font-bold text-slate-900">{{ item.operation }}</div>
+                                    <div class="text-[10px] text-slate-400 font-semibold">{{ item.difficulty }} • {{ item.date }}</div>
+                                </td>
+                                <td class="p-3 text-center">
+                                    <span :class="item.accuracy >= 80 ? 'text-emerald-600 bg-emerald-50' : item.accuracy >= 50 ? 'text-amber-600 bg-amber-50' : 'text-red-500 bg-red-50'" class="px-2 py-0.5 rounded-full font-bold">
+                                        {{ item.score }}/{{ item.total }} ({{ item.accuracy }}%)
+                                    </span>
+                                </td>
+                                <td class="p-3 text-right font-mono text-slate-500">{{ item.durationStr }}</td>
+                            </tr>
+                            <tr v-if="(parentUser ? parentFilteredReports : filteredReportList).length === 0">
+                                <td colspan="3" class="p-8 text-center text-slate-400 font-bold">
+                                    📭 {{ t('noPerformanceRecord') }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </main>
 
-        <!-- KEYPAD -->
+        <!-- KEYPAD FORMULASI JAWAPAN -->
         <footer v-if="screen === 'gameplay' || screen === 'correction' || screen === 'sifir-gameplay'" class="bg-slate-200 p-3 rounded-t-3xl shadow-2xl w-full border-t border-slate-300 shrink-0">
             <div class="grid grid-cols-3 gap-2 max-w-sm mx-auto">
                 <button v-for="num in ['1', '2', '3', '4', '5', '6', '7', '8', '9']" :key="num" @click="pressKey(num)" class="bg-white active:bg-slate-300 font-bold text-2xl py-3 rounded-xl shadow-sm text-slate-800 border-b-4 border-slate-300 transition-all transform active:scale-95">{{ num }}</button>
@@ -443,40 +688,210 @@
                 const lang = ref('ms');
                 const translations = {
                     ms: {
-                        guardian: "Penjaga", mainMenu: "Menu Utama", profile: "Profil", performanceRecord: "Rekod Prestasi", logout: "Log Keluar",
-                        tagline: "Jom jadi bijak Matematik & Kuasai Sifir!", loginChild: "MASUK SEBAGAI ANAK (PIN)", loginParent: "LOG MASUK IBU BAPA / GURU",
-                        back: "Kembali", enterPin: "Sila Masukkan No PIN Anda", getPinInfo: "Dapatkan 6-digit PIN daripada akaun ibu bapa anda.",
-                        pinPlaceholder: "Contoh: 123456", checking: "Menyemak...", enterGame: "MASUK PERMAINAN", parentTitle: "Log Masuk Ibu Bapa / Guru",
-                        parentInfo: "Gunakan akaun Google anda untuk mengakses dashboard pengurusan keluarga & prestasi anak.", processing: "Memproses...",
-                        loginGoogle: "Log Masuk Dengan Google", profileInfo: "Maklumat Profil", guardianAcc: "Akaun Penjaga", childAcc: "Akaun Murid / Anak",
-                        adminAcc: "Akaun Pentadbir Ibu Bapa / Guru", welcome: "Selamat Datang", chooseModule: "Sila pilih modul latihan anda hari ini:",
-                        standardFormMath: "Math Bentuk Lazim", stdFormDesc: "Latihan Tambah, Tolak, Darab & Bahagi", timesTableTitle: "Bijak Sifir",
-                        timesTableDesc: "Latihan Hafalan Sifir 2 hingga 12", selectModule: "Pilih Modul", selectOp: "Pilih Operasi", add: "Tambah",
-                        subtract: "Tolak", multiply: "Darab", divide: "Bahagi", numQuestions: "Bilangan Soalan", difficulty: "Tahap Kesukaran",
-                        diff_Mudah: "Mudah", diff_Sederhana: "Sederhana", diff_Pro: "Pro", startPractice: "MULA LATIHAN", selectTimesTable: "Pilih Sifir",
-                        sifirPrefix: "Sifir", questions: "Soalan", startTimesTable: "MULA LATIHAN SIFIR", question: "Soalan", score: "Skor",
-                        submitAnswer: "Hantar Jawapan", parentAccTitle: "Akaun Utama Penjaga", selectMgmtMenu: "Sila pilih menu pengurusan di bawah",
-                        manageFamily: "URUS AKAUN KELUARGA", addChildProfile: "Tambah Profil Anak", childNamePlaceholder: "Nama anak (cth: Alyaa)",
-                        generatingPin: "Menjana PIN...", correctionMode: "MOD PEMBETULAN", cancel: "Batal", submitSheet: "Hantar Jawapan Helaian",
-                        greatJob: "Hebat", finishedPractice: "Anda telah menamatkan latihan.", retry: "Ulang Lagi", pinInvalid: "No PIN tidak sah."
+                        guardian: "Penjaga",
+                        mainMenu: "Menu Utama",
+                        profile: "Profil",
+                        performanceRecord: "Rekod Prestasi",
+                        logout: "Log Keluar",
+                        tagline: "Jom jadi bijak Matematik & Kuasai Sifir!",
+                        loginChild: "MASUK SEBAGAI ANAK (PIN)",
+                        loginParent: "LOG MASUK IBU BAPA / GURU",
+                        back: "Kembali",
+                        enterPin: "Sila Masukkan No PIN Anda",
+                        getPinInfo: "Dapatkan 6-digit PIN daripada akaun ibu bapa anda.",
+                        pinPlaceholder: "Contoh: 123456",
+                        checking: "Menyemak...",
+                        enterGame: "MASUK PERMAINAN",
+                        parentTitle: "Log Masuk Ibu Bapa / Guru",
+                        parentInfo: "Gunakan akaun Google anda untuk mengakses dashboard pengurusan keluarga & prestasi anak.",
+                        processing: "Memproses...",
+                        loginGoogle: "Log Masuk Dengan Google",
+                        profileInfo: "Maklumat Profil",
+                        guardianAcc: "Akaun Penjaga",
+                        childAcc: "Akaun Murid / Anak",
+                        adminAcc: "Akaun Pentadbir Ibu Bapa / Guru",
+                        modeStatus: "Status Mod",
+                        childUser: "Pengguna PIN Anak",
+                        parentGoogle: "Ibu Bapa (Google)",
+                        totalSessions: "Jumlah Sesi Latihan",
+                        sessions: "Sesi",
+                        welcome: "Selamat Datang",
+                        chooseModule: "Sila pilih modul latihan anda hari ini:",
+                        standardFormMath: "Math Bentuk Lazim",
+                        stdFormDesc: "Latihan Tambah, Tolak, Darab & Bahagi",
+                        timesTableTitle: "Bijak Sifir",
+                        timesTableDesc: "Latihan Hafalan Sifir 2 hingga 12",
+                        selectModule: "Pilih Modul",
+                        selectOp: "Pilih Operasi",
+                        add: "Tambah",
+                        subtract: "Tolak",
+                        multiply: "Darab",
+                        divide: "Bahagi",
+                        numQuestions: "Bilangan Soalan",
+                        difficulty: "Tahap Kesukaran",
+                        diff_Mudah: "Mudah",
+                        diff_Sederhana: "Sederhana",
+                        diff_Pro: "Pro",
+                        startPractice: "MULA LATIHAN",
+                        selectTimesTable: "Pilih Sifir",
+                        sifirPrefix: "Sifir",
+                        questions: "Soalan",
+                        startTimesTable: "MULA LATIHAN SIFIR",
+                        question: "Soalan",
+                        score: "Skor",
+                        submitAnswer: "Hantar Jawapan",
+                        parentAccTitle: "Akaun Utama Penjaga",
+                        selectMgmtMenu: "Sila pilih menu pengurusan di bawah",
+                        manageFamily: "URUS AKAUN KELUARGA",
+                        backToMenu: "Kembali ke Menu",
+                        addChildProfile: "Tambah Profil Anak",
+                        childNamePlaceholder: "Nama anak (cth: Alyaa)",
+                        generatingPin: "Menjana PIN...",
+                        childListPin: "Senarai Profil & PIN Anak",
+                        noChildProfiles: "Tiada profil anak diwujudkan lagi. Sila tambah di atas.",
+                        newPin: "Jana PIN Baru",
+                        delete: "Padam",
+                        sessionsCompleted: "Sesi Selesai",
+                        avgScore: "Purata Skor",
+                        selectChildName: "Sila Pilih Nama Anak",
+                        selectChild: "PILIH NAMA ANAK",
+                        opLevel: "Operasi / Tahap",
+                        time: "Masa",
+                        noScoreRecord: "Tiada rekod skor untuk anak ini lagi.",
+                        clearChildRecord: "Padam Rekod Skor Anak Ini",
+                        correctionMode: "MOD PEMBETULAN",
+                        cancel: "Batal",
+                        finalRemainder: "Baki Akhir",
+                        submitSheet: "Hantar Jawapan Helaian",
+                        checkCorrection: "Semak Pembetulan",
+                        greatJob: "Hebat",
+                        finishedPractice: "Anda telah menamatkan latihan.",
+                        correctGrade: "Gred Betul",
+                        scorePercent: "Peratusan Skor",
+                        timeTaken: "Masa Diambil",
+                        questionChecklist: "Senarai Semakan Soalan & Pembetulan",
+                        qPrefix: "S",
+                        correctAns: "Jawapan betul",
+                        corrected: "Selesai dibetulkan",
+                        fix: "Betulkan",
+                        retry: "Ulang Lagi",
+                        performanceReport: "Laporan Prestasi",
+                        operation: "Operasi",
+                        noPerformanceRecord: "Tiada rekod prestasi dijumpai.",
+                        minutes: "minit",
+                        seconds: "saat",
+                        pinInvalid: "No PIN tidak sah. Sila semak dengan ibu bapa anda.",
+                        connError: "Ralat sambungan: ",
+                        newPinSuccess: "PIN 6-digit baharu berjaya dijana!",
+                        confirmDeleteProfile: "Padam profil anak ini secara kekal?",
+                        confirmClearReports: "Adakah anda pasti mahu memadam semua sejarah rekod skor milik ",
+                        recordsDeleted: "Rekod berjaya dipadamkan.",
+                        correctAlert: "Syabas! Pembetulan anda betul! 🎉",
+                        wrongAlert: "Alamak, jawapan pembetulan masih kurang tepat. Cuba lagi ya! 💪",
+                        memorization: "Hafalan"
                     },
                     en: {
-                        guardian: "Guardian", mainMenu: "Main Menu", profile: "Profile", performanceRecord: "Performance Record", logout: "Log Out",
-                        tagline: "Let's get smart in Math & Master Multiplication!", loginChild: "LOG IN AS CHILD (PIN)", loginParent: "PARENT / TEACHER LOG IN",
-                        back: "Back", enterPin: "Please Enter Your PIN Number", getPinInfo: "Get your 6-digit PIN from your parents' account.",
-                        pinPlaceholder: "Example: 123456", checking: "Checking...", enterGame: "ENTER GAME", parentTitle: "Parent / Teacher Log In",
-                        parentInfo: "Use your Google account to access family management dashboard & child's performance.", processing: "Processing...",
-                        loginGoogle: "Log In With Google", profileInfo: "Profile Information", guardianAcc: "Guardian Account", childAcc: "Student / Child Account",
-                        adminAcc: "Parent / Teacher Admin Account", welcome: "Welcome", chooseModule: "Please select your practice module today:",
-                        standardFormMath: "Standard Form Math", stdFormDesc: "Addition, Subtraction, Multiplication & Division Practice", timesTableTitle: "Times Table Mastery",
-                        timesTableDesc: "Memorization Practice for Times Tables 2 to 12", selectModule: "Select Module", selectOp: "Select Operation", add: "Addition",
-                        subtract: "Subtraction", multiply: "Multiplication", divide: "Division", numQuestions: "Number of Questions", difficulty: "Difficulty Level",
-                        diff_Mudah: "Easy", diff_Sederhana: "Medium", diff_Pro: "Pro", startPractice: "START PRACTICE", selectTimesTable: "Select Table",
-                        sifirPrefix: "Table", questions: "Questions", startTimesTable: "START TIMES TABLE", question: "Question", score: "Score",
-                        submitAnswer: "Submit Answer", parentAccTitle: "Guardian Master Account", selectMgmtMenu: "Please select a management menu below",
-                        manageFamily: "MANAGE FAMILY ACCOUNT", addChildProfile: "Add Child Profile", childNamePlaceholder: "Child's name (e.g. Alyaa)",
-                        generatingPin: "Generating PIN...", correctionMode: "CORRECTION MODE", cancel: "Cancel", submitSheet: "Submit Sheet Answer",
-                        greatJob: "Great Job", finishedPractice: "You have completed the practice.", retry: "Retry Again", pinInvalid: "Invalid PIN number."
+                        guardian: "Guardian",
+                        mainMenu: "Main Menu",
+                        profile: "Profile",
+                        performanceRecord: "Performance Record",
+                        logout: "Log Out",
+                        tagline: "Let's get smart in Math & Master Multiplication!",
+                        loginChild: "LOG IN AS CHILD (PIN)",
+                        loginParent: "PARENT / TEACHER LOG IN",
+                        back: "Back",
+                        enterPin: "Please Enter Your PIN Number",
+                        getPinInfo: "Get your 6-digit PIN from your parents' account.",
+                        pinPlaceholder: "Example: 123456",
+                        checking: "Checking...",
+                        enterGame: "ENTER GAME",
+                        parentTitle: "Parent / Teacher Log In",
+                        parentInfo: "Use your Google account to access family management dashboard & child's performance.",
+                        processing: "Processing...",
+                        loginGoogle: "Log In With Google",
+                        profileInfo: "Profile Information",
+                        guardianAcc: "Guardian Account",
+                        childAcc: "Student / Child Account",
+                        adminAcc: "Parent / Teacher Admin Account",
+                        modeStatus: "Mode Status",
+                        childUser: "Child PIN User",
+                        parentGoogle: "Parent (Google)",
+                        totalSessions: "Total Practice Sessions",
+                        sessions: "Sessions",
+                        welcome: "Welcome",
+                        chooseModule: "Please select your practice module today:",
+                        standardFormMath: "Standard Form Math",
+                        stdFormDesc: "Addition, Subtraction, Multiplication & Division Practice",
+                        timesTableTitle: "Times Table Mastery",
+                        timesTableDesc: "Memorization Practice for Times Tables 2 to 12",
+                        selectModule: "Select Module",
+                        selectOp: "Select Operation",
+                        add: "Addition",
+                        subtract: "Subtraction",
+                        multiply: "Multiplication",
+                        divide: "Division",
+                        numQuestions: "Number of Questions",
+                        difficulty: "Difficulty Level",
+                        diff_Mudah: "Easy",
+                        diff_Sederhana: "Medium",
+                        diff_Pro: "Pro",
+                        startPractice: "START PRACTICE",
+                        selectTimesTable: "Select Table",
+                        sifirPrefix: "Table",
+                        questions: "Questions",
+                        startTimesTable: "START TIMES TABLE",
+                        question: "Question",
+                        score: "Score",
+                        submitAnswer: "Submit Answer",
+                        parentAccTitle: "Guardian Master Account",
+                        selectMgmtMenu: "Please select a management menu below",
+                        manageFamily: "MANAGE FAMILY ACCOUNT",
+                        backToMenu: "Back to Menu",
+                        addChildProfile: "Add Child Profile",
+                        childNamePlaceholder: "Child's name (e.g. Alyaa)",
+                        generatingPin: "Generating PIN...",
+                        childListPin: "Child Profiles & PIN List",
+                        noChildProfiles: "No child profiles created yet. Please add above.",
+                        newPin: "New PIN",
+                        delete: "Delete",
+                        sessionsCompleted: "Completed Sessions",
+                        avgScore: "Average Score",
+                        selectChildName: "Please Select Child Name",
+                        selectChild: "SELECT CHILD NAME",
+                        opLevel: "Operation / Level",
+                        time: "Time",
+                        noScoreRecord: "No score records for this child yet.",
+                        clearChildRecord: "Delete Score Records for this Child",
+                        correctionMode: "CORRECTION MODE",
+                        cancel: "Cancel",
+                        finalRemainder: "Final Remainder",
+                        submitSheet: "Submit Sheet Answer",
+                        checkCorrection: "Check Correction",
+                        greatJob: "Great Job",
+                        finishedPractice: "You have completed the practice.",
+                        correctGrade: "Correct Grade",
+                        scorePercent: "Score Percentage",
+                        timeTaken: "Time Taken",
+                        questionChecklist: "Question Checklist & Correction",
+                        qPrefix: "Q",
+                        correctAns: "Correct answer",
+                        corrected: "Correction completed",
+                        fix: "Fix",
+                        retry: "Retry Again",
+                        performanceReport: "Performance Report",
+                        operation: "Operation",
+                        noPerformanceRecord: "No performance records found.",
+                        minutes: "minutes",
+                        seconds: "seconds",
+                        pinInvalid: "Invalid PIN number. Please check with your parents.",
+                        connError: "Connection error: ",
+                        newPinSuccess: "New 6-digit PIN successfully generated!",
+                        confirmDeleteProfile: "Permanently delete this child profile?",
+                        confirmClearReports: "Are you sure you want to delete all score history belonging to ",
+                        recordsDeleted: "Records successfully deleted.",
+                        correctAlert: "Great job! Your correction is correct! 🎉",
+                        wrongAlert: "Oops, correction answer is still inaccurate. Try again! 💪",
+                        memorization: "Memorization"
                     }
                 };
 
@@ -487,6 +902,7 @@
                 const parentUser = ref(null);         
                 const screen = ref('login-selection');
                 const sidebarOpen = ref(false);
+                
                 const childPinInput = ref('');
                 const authLoading = ref(false);
                 const isManagingPin = ref(false);
@@ -512,9 +928,12 @@
                 const answerArray = ref([]);       
                 const answerArrayRow2 = ref([]);   
                 const answerArrayFinal = ref([]);  
-                const carryArray = ref([]);        
-                const carryArrayFinal = ref([]);   
+                const carryArray = ref([]);  
+                const carryBottomArray = ref([]);       // Kotak Carry Bawah untuk operasi Tambah biasa
+                const carryFinalBottomArray = ref([]);  // Kotak Carry Bawah untuk baris total tambah Darab
+                const borrowArray = ref([]); 
                 
+                const divisionInputs = ref({ quotientArray: [], remainderArray: [], finalRemainder: '' });
                 const activeTarget = ref({ type: 'answer', index: 0 });
                 const timerSeconds = ref(0);
                 const timerInterval = ref(null);
@@ -528,7 +947,9 @@
                         if (type === 'click') {
                             const osc = ctx.createOscillator();
                             const gain = ctx.createGain();
-                            osc.type = 'sine'; osc.frequency.setValueAtTime(400, ctx.currentTime);
+                            osc.type = 'sine';
+                            osc.frequency.setValueAtTime(400, ctx.currentTime);
+                            osc.frequency.exponentialRampToValueAtTime(10, ctx.currentTime + 0.1);
                             gain.gain.setValueAtTime(0.3, ctx.currentTime);
                             gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
                             osc.connect(gain); gain.connect(ctx.destination);
@@ -538,7 +959,8 @@
                             [600, 900].forEach((freq, i) => {
                                 const osc = ctx.createOscillator();
                                 const gain = ctx.createGain();
-                                osc.type = 'triangle'; osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                                osc.type = 'triangle';
+                                osc.frequency.setValueAtTime(freq, now + i * 0.08);
                                 gain.gain.setValueAtTime(0.2, now + i * 0.08);
                                 gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.3);
                                 osc.connect(gain); gain.connect(ctx.destination);
@@ -547,7 +969,9 @@
                         } else if (type === 'wrong') {
                             const osc = ctx.createOscillator();
                             const gain = ctx.createGain();
-                            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, ctx.currentTime);
+                            osc.type = 'sawtooth';
+                            osc.frequency.setValueAtTime(150, ctx.currentTime);
+                            osc.frequency.linearRampToValueAtTime(80, ctx.currentTime + 0.3);
                             gain.gain.setValueAtTime(0.2, ctx.currentTime);
                             gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
                             osc.connect(gain); gain.connect(ctx.destination);
@@ -589,8 +1013,10 @@
                     try {
                         await signInWithPopup(fAuth, googleProvider);
                         user.value = null; 
-                    } catch (error) { alert("Google Auth Error: " + error.message); playSound('wrong'); }
-                    finally { authLoading.value = false; }
+                    } catch (error) {
+                        alert("Google Auth Error: " + error.message);
+                        playSound('wrong');
+                    } finally { authLoading.value = false; }
                 };
 
                 const loginAsChild = async () => {
@@ -608,6 +1034,10 @@
                                         if (String(profiles[profileId].pin) === childPinInput.value.trim()) {
                                             parentUser.value = null; 
                                             user.value = profiles[profileId].name;
+                                            onValue(dbRef(fDatabase, `users/${parentUid}/reports`), (repSnapshot) => {
+                                                const repData = repSnapshot.val();
+                                                reportList.value = repData ? Object.keys(repData).map(key => ({ id: key, ...repData[key] })) : [];
+                                            });
                                             config.value.activeParentId = parentUid;
                                             playSound('correct');
                                             screen.value = 'mode-selection';
@@ -620,12 +1050,27 @@
                             }
                         }
                         if (!pinFound) { alert(t('pinInvalid')); playSound('wrong'); }
-                    } catch (e) { alert(e.message); } 
+                    } catch (e) { alert(t('connError') + e.message); } 
                     finally { authLoading.value = false; }
                 };
 
                 const generateUniquePin = async () => {
-                    return String(Math.floor(100000 + Math.random() * 900000));
+                    const existingPins = new Set();
+                    try {
+                        const snapshot = await get(dbRef(fDatabase, 'users'));
+                        if (snapshot.exists()) {
+                            const allUsers = snapshot.val();
+                            for (const pUid in allUsers) {
+                                const profiles = allUsers[pUid].profiles;
+                                if (profiles) Object.values(profiles).forEach(p => p.pin && existingPins.add(String(p.pin)));
+                            }
+                        }
+                    } catch (e) {}
+                    let pin;
+                    while (!pin || existingPins.has(pin)) {
+                        pin = String(Math.floor(100000 + Math.random() * 900000));
+                    }
+                    return pin;
                 };
 
                 const addChildProfile = async () => {
@@ -636,20 +1081,66 @@
                         await push(dbRef(fDatabase, `users/${parentUser.value}/profiles`), { name: newChildName.value.trim().toLowerCase(), pin });
                         newChildName.value = '';
                         playSound('correct');
-                    } catch (e) {} 
+                    } catch (e) { alert(t('connError') + e.message); } 
                     finally { isManagingPin.value = false; }
+                };
+
+                const regenerateChildPin = async (profileId) => {
+                    if (!parentUser.value) return;
+                    isManagingPin.value = true;
+                    try {
+                        const newPin = await generateUniquePin();
+                        await set(dbRef(fDatabase, `users/${parentUser.value}/profiles/${profileId}/pin`), newPin);
+                        playSound('correct');
+                        alert(t('newPinSuccess'));
+                    } catch (e) { alert(t('connError') + e.message); } 
+                    finally { isManagingPin.value = false; }
+                };
+
+                const deleteChildProfile = async (profileId) => {
+                    if (!parentUser.value || !confirm(t('confirmDeleteProfile'))) return;
+                    try {
+                        await remove(dbRef(fDatabase, `users/${parentUser.value}/profiles/${profileId}`));
+                        playSound('wrong');
+                    } catch (e) { alert(t('connError') + e.message); }
+                };
+
+                const getChildStats = (name) => {
+                    if (!name) return { total: 0, accuracy: 0 };
+                    const childReports = reportList.value.filter(r => r.studentName === name.toLowerCase());
+                    if (childReports.length === 0) return { total: 0, accuracy: 0 };
+                    return { total: childReports.length, accuracy: Math.round(childReports.reduce((s, r) => s + (r.accuracy || 0), 0) / childReports.length) };
+                };
+
+                const clearChildReports = async () => {
+                    if (!parentUser.value || !selectedChildForReport.value) return;
+                    if (!confirm(`${t('confirmClearReports')}${selectedChildForReport.value.toUpperCase()}?`)) return;
+                    playSound('wrong');
+                    try {
+                        for (const report of reportList.value.filter(r => r.studentName === selectedChildForReport.value.toLowerCase())) {
+                            await remove(dbRef(fDatabase, `users/${parentUser.value}/reports/${report.id}`));
+                        }
+                        alert(t('recordsDeleted'));
+                    } catch(e) { alert(t('connError') + e.message); }
                 };
 
                 const logout = async () => {
                     sidebarOpen.value = false;
                     playSound('wrong');
+                    stopTimer();
                     await signOut(fAuth);
                     user.value = null; parentUser.value = null;
+                    childProfiles.value = []; reportList.value = [];
+                    childPinInput.value = ''; selectedChildForReport.value = '';
+                    config.value.activeParentId = null;
                     screen.value = 'login-selection';
                 };
 
                 const openProfile = () => { playSound('click'); sidebarOpen.value = false; screen.value = 'profile'; };
-                const openReports = () => { playSound('click'); sidebarOpen.value = false; screen.value = 'reports'; };
+                const openReports = () => { playSound('click'); sidebarOpen.value = false; screen.value = parentUser.value ? 'parentReports' : 'reports'; };
+
+                const filteredReportList = computed(() => user.value ? reportList.value.filter(r => r.studentName === user.value.toLowerCase()) : reportList.value);
+                const parentFilteredReports = computed(() => selectedChildForReport.value ? reportList.value.filter(r => r.studentName === selectedChildForReport.value.toLowerCase()) : []);
 
                 const currentQuestion = computed(() => {
                     if (screen.value === 'correction' && correctionIndex.value !== null) {
@@ -668,6 +1159,8 @@
                 });
 
                 const formattedTime = computed(() => `${String(Math.floor(timerSeconds.value / 60)).padStart(2, '0')}:${String(timerSeconds.value % 60).padStart(2, '0')}`);
+                const currentAccuracy = computed(() => currentQuestionIndex.value === 0 ? 100 : Math.round((score.value / currentQuestionIndex.value) * 100));
+                const currentSessionTotalQuestions = computed(() => currentSessionType.value === 'Bentuk Lazim' ? config.value.totalQuestions : sifirConfig.value.totalQuestions);
 
                 const getDigitAt = (number, index) => {
                     const str = String(number);
@@ -697,15 +1190,33 @@
                             else if (diff === 'Sederhana') { num1 = Math.floor(Math.random() * 90) + 10; num2 = Math.floor(Math.random() * 9) + 1; } 
                             else { num1 = Math.floor(Math.random() * 900) + 100; num2 = Math.floor(Math.random() * 90) + 10; } 
                         } else if (op === 'Bahagi') {
-                            num2 = Math.floor(Math.random() * 8) + 2; let quotient = Math.floor(Math.random() * 4) + 11; num1 = num2 * quotient;
+                            if (diff === 'Mudah') {
+                                num2 = Math.floor(Math.random() * 8) + 2; let quotient = Math.floor(Math.random() * 4) + 11; num1 = num2 * quotient;
+                                if (num1 > 99) { quotient = Math.floor(99 / num2); num1 = num2 * quotient; }
+                            } else if (diff === 'Sederhana') {
+                                num2 = Math.floor(Math.random() * 8) + 2; num1 = Math.floor(Math.random() * 89) + 10;
+                                if (num1 % num2 === 0) num1 = (num1 + 1) > 99 ? num1 - 1 : num1 + 1;
+                            } else {
+                                num2 = Math.floor(Math.random() * 8) + 2; num1 = Math.floor(Math.random() * 899) + 100;
+                                if (num1 % num2 === 0) num1 = (num1 + 1) > 999 ? num1 - 1 : num1 + 1;
+                            }
                         }
 
-                        const key = `${num1}-${num2}`;
+                        const key = op === 'Tambah' || op === 'Darab' ? [num1, num2].sort((a,b)=>a-b).join('-') : `${num1}-${num2}`;
                         if (!usedQuestionCombos.value.has(key)) {
                             usedQuestionCombos.value.add(key);
-                            questions.value.push({ num1, num2, isCorrect: false, studentAnsStr: '', correctAnsStr: '' });
+                            questions.value.push({ num1, num2, isCorrect: false, studentAnsStr: '', correctAnsStr: '', wasCorrected: false });
                         }
                     }
+                };
+
+                const generateSifirQuestions = () => {
+                    sifirQuestions.value = [];
+                    const selected = sifirConfig.value.selectedSifir;
+                    const totalReq = sifirConfig.value.totalQuestions;
+                    let multipliers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].sort(() => Math.random() - 0.5);
+                    while (multipliers.length < totalReq) multipliers = multipliers.concat([...multipliers].sort(() => Math.random() - 0.5));
+                    sifirQuestions.value = multipliers.slice(0, totalReq).map(m => ({ num1: selected, num2: m, correctAns: selected * m }));
                 };
 
                 const startSession = () => {
@@ -725,8 +1236,7 @@
                     if (!user.value) user.value = "Utama";
                     currentSessionType.value = 'Bijak Sifir';
                     playSound('correct');
-                    let multipliers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].sort(() => Math.random() - 0.5);
-                    sifirQuestions.value = multipliers.slice(0, sifirConfig.value.totalQuestions).map(m => ({ num1: sifirConfig.value.selectedSifir, num2: m, correctAns: sifirConfig.value.selectedSifir * m }));
+                    generateSifirQuestions();
                     currentSifirIndex.value = 0;
                     score.value = 0;
                     sifirAnswerInput.value = '';
@@ -735,49 +1245,33 @@
                 };
 
                 const setupQuestionLayout = () => {
+                    const op = config.value.operation;
                     activeTarget.value = { type: 'answer', index: 0 };
+                    
                     answerArray.value = Array(maxColumns.value).fill('');
                     answerArrayRow2.value = Array(maxColumns.value).fill('');
                     answerArrayFinal.value = Array(maxColumns.value).fill('');
                     carryArray.value = Array(maxColumns.value).fill('');
-                    carryArrayFinal.value = Array(maxColumns.value).fill('');
-                };
+                    carryBottomArray.value = Array(maxColumns.value).fill('');
+                    carryFinalBottomArray.value = Array(5).fill('');
+                    borrowArray.value = Array(maxColumns.value).fill('');
 
-                // AUTOMATIK MASUKKAN CARRY APABILA JAWAPAN > 9
-                const autoCalculateCarryAndNext = (targetType, currentIndex) => {
-                    if (targetType === 'answer') {
-                        let currentVal = parseInt(answerArray.value[currentIndex], 10) || 0;
-                        // Jika nilai > 9 untuk operasi tambah/darab biasa, otomatik asingkan sa dan bawa puluh ke carry sebelah kiri
-                        if (currentVal > 9 && config.value.operation === 'Tambah') {
-                            let sa = currentVal % 10;
-                            let puluh = Math.floor(currentVal / 10);
-                            answerArray.value[currentIndex] = String(sa);
-                            carryArray.value[currentIndex + 1] = String(puluh);
-                        }
-                        if (currentIndex < maxColumns.value - 1) {
-                            activeTarget.value = { type: 'answer', index: currentIndex + 1 };
-                        } else if (config.value.operation === 'Darab') {
-                            activeTarget.value = { type: 'answerRow2', index: 0 };
-                        }
-                    } else if (targetType === 'answerRow2') {
-                        if (currentIndex < maxColumns.value - 2) {
-                            activeTarget.value = { type: 'answerRow2', index: currentIndex + 1 };
-                        } else {
-                            activeTarget.value = { type: 'answerFinal', index: 0 };
-                        }
-                    } else if (targetType === 'answerFinal') {
-                        let currentVal = parseInt(answerArrayFinal.value[currentIndex], 10) || 0;
-                        if (currentVal > 9) {
-                            let sa = currentVal % 10;
-                            let puluh = Math.floor(currentVal / 10);
-                            answerArrayFinal.value[currentIndex] = String(sa);
-                            carryArrayFinal.value[currentIndex + 1] = String(puluh);
-                        }
-                        if (currentIndex < maxColumns.value - 1) {
-                            activeTarget.value = { type: 'answerFinal', index: currentIndex + 1 };
-                        }
+                    if (op === 'Bahagi') {
+                        const len = String(currentQuestion.value.num1).length;
+                        divisionInputs.value = { quotientArray: Array(len).fill(''), remainderArray: Array(len).fill(''), finalRemainder: '' };
+                        activeTarget.value = { type: 'div_quotient_arr', index: 0 };
                     }
                 };
+
+                const startCorrection = (index) => {
+                    playSound('click');
+                    correctionIndex.value = index;
+                    screen.value = 'correction';
+                    setupQuestionLayout();
+                };
+
+                const exitCorrection = () => { playSound('click'); correctionIndex.value = null; screen.value = 'results'; };
+                const triggerBorrow = (idx) => { if (config.value.operation === 'Tolak') { playSound('click'); activeTarget.value = { type: 'borrow', index: idx }; } };
 
                 const pressKey = (key) => {
                     playSound('click');
@@ -789,24 +1283,51 @@
                     }
 
                     const target = activeTarget.value;
+                    const op = config.value.operation;
+                    const digitCount = String(currentQuestion.value.num1).length;
+                    const limitCols = maxColumns.value;
+                    
                     if (key === 'C') { clearActiveTarget(); return; }
                     if (key === 'BACKSPACE') { backspaceActiveTarget(); return; }
 
                     if (target.type === 'answer') {
                         answerArray.value[target.index] = key;
-                        autoCalculateCarryAndNext('answer', target.index);
+                        if (target.index < limitCols - 1) {
+                            activeTarget.value = { type: 'answer', index: target.index + 1 };
+                        } else if (op === 'Darab') {
+                            activeTarget.value = { type: 'answerRow2', index: 0 };
+                        }
                     } else if (target.type === 'answerRow2') {
                         answerArrayRow2.value[target.index] = key;
-                        autoCalculateCarryAndNext('answerRow2', target.index);
+                        if (target.index < limitCols - 2) {
+                            activeTarget.value = { type: 'answerRow2', index: target.index + 1 };
+                        } else {
+                            activeTarget.value = { type: 'answerFinal', index: 0 };
+                        }
                     } else if (target.type === 'answerFinal') {
                         answerArrayFinal.value[target.index] = key;
-                        autoCalculateCarryAndNext('answerFinal', target.index);
+                        if (target.index < limitCols - 1) {
+                            activeTarget.value = { type: 'answerFinal', index: target.index + 1 };
+                        }
                     } else if (target.type === 'carry') {
                         carryArray.value[target.index] = key;
                         activeTarget.value = { type: 'answer', index: target.index };
-                    } else if (target.type === 'carryFinal') {
-                        carryArrayFinal.value[target.index] = key;
+                    } else if (target.type === 'carryBottom') {
+                        carryBottomArray.value[target.index] = key;
+                    } else if (target.type === 'carryFinalBottom') {
+                        carryFinalBottomArray.value[target.index] = key;
                         activeTarget.value = { type: 'answerFinal', index: target.index };
+                    } else if (target.type === 'borrow') {
+                        let currentVal = String(borrowArray.value[target.index] || '');
+                        if (currentVal.length < 2) borrowArray.value[target.index] = currentVal + key;
+                    } else if (target.type === 'div_quotient_arr') {
+                        divisionInputs.value.quotientArray[target.index] = key;
+                        activeTarget.value = target.index < digitCount - 1 ? { type: 'div_remainder_arr', index: target.index } : { type: 'div_final_remainder', index: 0 };
+                    } else if (target.type === 'div_remainder_arr') {
+                        divisionInputs.value.remainderArray[target.index] = key;
+                        if (target.index + 1 < digitCount) activeTarget.value = { type: 'div_quotient_arr', index: target.index + 1 };
+                    } else if (target.type === 'div_final_remainder') {
+                        divisionInputs.value.finalRemainder = key;
                     }
                 };
 
@@ -816,14 +1337,32 @@
                     if (t.type === 'answerRow2') answerArrayRow2.value[t.index] = '';
                     if (t.type === 'answerFinal') answerArrayFinal.value[t.index] = '';
                     if (t.type === 'carry') carryArray.value[t.index] = '';
-                    if (t.type === 'carryFinal') carryArrayFinal.value[t.index] = '';
+                    if (t.type === 'carryBottom') carryBottomArray.value[t.index] = '';
+                    if (t.type === 'carryFinalBottom') carryFinalBottomArray.value[t.index] = '';
+                    if (t.type === 'borrow') borrowArray.value[t.index] = '';
+                    if (t.type === 'div_quotient_arr') divisionInputs.value.quotientArray[t.index] = '';
+                    if (t.type === 'div_remainder_arr') divisionInputs.value.remainderArray[t.index] = '';
+                    if (t.type === 'div_final_remainder') divisionInputs.value.finalRemainder = '';
                 };
 
                 const backspaceActiveTarget = () => {
                     const t = activeTarget.value;
-                    if (t.type === 'answer') { answerArray.value[t.index] = ''; if (t.index > 0) activeTarget.value = { type: 'answer', index: t.index - 1 }; }
-                    else if (t.type === 'answerRow2') { answerArrayRow2.value[t.index] = ''; if (t.index > 0) activeTarget.value = { type: 'answerRow2', index: t.index - 1 }; }
-                    else if (t.type === 'answerFinal') { answerArrayFinal.value[t.index] = ''; if (t.index > 0) activeTarget.value = { type: 'answerFinal', index: t.index - 1 }; }
+                    if (t.type === 'answer') {
+                        answerArray.value[t.index] = '';
+                        if (t.index > 0) activeTarget.value = { type: 'answer', index: t.index - 1 };
+                    } else if (t.type === 'answerRow2') {
+                        answerArrayRow2.value[t.index] = '';
+                        if (t.index > 0) activeTarget.value = { type: 'answerRow2', index: t.index - 1 };
+                    } else if (t.type === 'answerFinal') {
+                        answerArrayFinal.value[t.index] = '';
+                        if (t.index > 0) activeTarget.value = { type: 'answerFinal', index: t.index - 1 };
+                    } else if (t.type === 'carry') { carryArray.value[t.index] = ''; activeTarget.value = { type: 'answer', index: t.index - 1 }; }
+                    else if (t.type === 'carryBottom') { carryBottomArray.value[t.index] = ''; }
+                    else if (t.type === 'carryFinalBottom') { carryFinalBottomArray.value[t.index] = ''; activeTarget.value = { type: 'answerFinal', index: t.index - 1 }; }
+                    else if (t.type === 'borrow') { let val = String(borrowArray.value[t.index] || ''); borrowArray.value[t.index] = val.substring(0, val.length - 1); }
+                    else if (t.type === 'div_quotient_arr') { divisionInputs.value.quotientArray[t.index] = ''; if (t.index > 0) activeTarget.value = { type: 'div_remainder_arr', index: t.index - 1 }; }
+                    else if (t.type === 'div_remainder_arr') { divisionInputs.value.remainderArray[t.index] = ''; activeTarget.value = { type: 'div_quotient_arr', index: t.index }; }
+                    else if (t.type === 'div_final_remainder') { divisionInputs.value.finalRemainder = ''; activeTarget.value = { type: 'div_quotient_arr', index: String(currentQuestion.value.num1).length - 1 }; }
                 };
 
                 const submitSifirAnswer = () => {
@@ -838,15 +1377,46 @@
                 const submitAnswer = () => {
                     const op = config.value.operation;
                     const q = currentQuestion.value;
-                    let isCorrect = false;
+                    let isCorrect = false; let studentAnsStr = ''; let correctAnsStr = '';
 
                     if (op === 'Tambah' || op === 'Tolak') {
-                        const submittedAns = parseInt([...answerArray.value].reverse().join('').trim(), 10) || 0;
-                        if (submittedAns === (op === 'Tambah' ? q.num1 + q.num2 : q.num1 - q.num2)) isCorrect = true;
+                        const submittedString = [...answerArray.value].reverse().join('').trim();
+                        const submittedAns = parseInt(submittedString, 10) || 0;
+                        studentAnsStr = submittedString || '0';
+                        const actualAns = op === 'Tambah' ? q.num1 + q.num2 : q.num1 - q.num2;
+                        correctAnsStr = String(actualAns);
+                        if (submittedAns === actualAns) isCorrect = true;
                     } else if (op === 'Darab') {
-                        const submittedAns = parseInt([...answerArrayFinal.value].reverse().join('').trim(), 10) || 0;
-                        if (submittedAns === q.num1 * q.num2) isCorrect = true;
+                        const finalString = [...answerArrayFinal.value].reverse().join('').trim();
+                        const submittedAns = parseInt(finalString, 10) || 0;
+                        studentAnsStr = finalString || '0';
+                        const actualAns = q.num1 * q.num2;
+                        correctAnsStr = String(actualAns);
+                        if (submittedAns === actualAns) isCorrect = true;
+                    } else if (op === 'Bahagi') {
+                        const actualQ = Math.floor(q.num1 / q.num2);
+                        const actualR = q.num1 % q.num2;
+                        const sQ = parseInt(divisionInputs.value.quotientArray.join('').trim(), 10) || 0;
+                        const sR = parseInt(divisionInputs.value.finalRemainder, 10) || 0;
+                        studentAnsStr = `${sQ}${sR > 0 ? ' Baki ' + sR : ''}`;
+                        correctAnsStr = `${actualQ}${actualR > 0 ? ' Baki ' + actualR : ''}`;
+                        if (sQ === actualQ && sR === actualR) isCorrect = true;
                     }
+
+                    if (screen.value === 'correction') {
+                        if (isCorrect) {
+                            playSound('correct'); alert(t('correctAlert'));
+                            questions.value[correctionIndex.value].isCorrect = true;
+                            questions.value[correctionIndex.value].studentAnsStr = studentAnsStr;
+                            questions.value[correctionIndex.value].wasCorrected = true; 
+                            exitCorrection();
+                        } else { playSound('wrong'); alert(t('wrongAlert')); }
+                        return;
+                    }
+
+                    questions.value[currentQuestionIndex.value].isCorrect = isCorrect;
+                    questions.value[currentQuestionIndex.value].studentAnsStr = studentAnsStr;
+                    questions.value[currentQuestionIndex.value].correctAnsStr = correctAnsStr;
 
                     if (isCorrect) { score.value += 1; playSound('correct'); } else { playSound('wrong'); }
 
@@ -861,6 +1431,29 @@
 
                 const endSession = async () => {
                     stopTimer();
+                    const mins = Math.floor(timerSeconds.value / 60); const secs = timerSeconds.value % 60;
+                    finalTimeDisplay.value = mins > 0 ? `${mins} ${t('minutes')} ${secs} ${t('seconds')}` : `${secs} ${t('seconds')}`;
+                    const now = new Date();
+                    const dateStr = `${now.getDate()}/${now.getMonth()+1} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+                    
+                    const totalQ = currentSessionType.value === 'Bentuk Lazim' ? config.value.totalQuestions : sifirConfig.value.totalQuestions;
+                    const translatedOpName = currentSessionType.value === 'Bentuk Lazim' ? t('standardFormMath') + ` (${t(config.value.operation.toLowerCase())})` : t('timesTableTitle') + ` (${t('sifirPrefix')} ${sifirConfig.value.selectedSifir})`;
+                    
+                    const newRecord = {
+                        studentName: user.value.toLowerCase(),
+                        operation: translatedOpName,
+                        difficulty: currentSessionType.value === 'Bentuk Lazim' ? t('diff_' + config.value.difficulty) : t('memorization'),
+                        score: score.value, total: totalQ,
+                        accuracy: Math.round((score.value / totalQ) * 100),
+                        durationSecs: timerSeconds.value,
+                        durationStr: `${mins > 0 ? mins + 'm ' : ''}${secs}s`,
+                        date: dateStr
+                    };
+
+                    const activeUid = parentUser.value || config.value.activeParentId;
+                    if (activeUid) {
+                        try { await push(dbRef(fDatabase, `users/${activeUid}/reports`), newRecord); } catch (e) {}
+                    }
                     screen.value = 'results';
                 };
 
@@ -869,11 +1462,12 @@
 
                 return {
                     lang, t, toggleLanguage, user, parentUser, screen, sidebarOpen, childPinInput, authLoading, isManagingPin,
-                    newChildName, childProfiles, reportList, selectedChildForReport, config, sifirConfig, score, currentQuestionIndex,
-                    currentQuestion, currentSifirQuestion, currentSifirIndex, sifirAnswerInput, maxColumns, answerArray, answerArrayRow2, answerArrayFinal, carryArray, carryArrayFinal, activeTarget,
-                    formattedTime, currentSessionType, finalTimeDisplay, questions, correctionIndex,
-                    handleGoogleLogin, loginAsChild, addChildProfile, logout, openProfile, openReports, getDigitAt, changeOperation, startSession, startSifirSession, submitSifirAnswer, pressKey, 
-                    submitAnswer, retryCurrentSession, goToModeSelection, playSound, exitCorrection
+                    newChildName, childProfiles, reportList, filteredReportList, parentFilteredReports, selectedChildForReport, config, sifirConfig, score, currentQuestionIndex,
+                    currentQuestion, currentSifirQuestion, currentSifirIndex, sifirAnswerInput, maxColumns, answerArray, answerArrayRow2, answerArrayFinal, carryArray, carryBottomArray, carryFinalBottomArray, borrowArray, divisionInputs, activeTarget,
+                    formattedTime, currentAccuracy, currentSessionTotalQuestions, currentSessionType, finalTimeDisplay, questions, correctionIndex,
+                    handleGoogleLogin, loginAsChild, addChildProfile, regenerateChildPin, deleteChildProfile, getChildStats,
+                    logout, openProfile, openReports, getDigitAt, changeOperation, startSession, startSifirSession, submitSifirAnswer, triggerBorrow, pressKey, 
+                    submitAnswer, retryCurrentSession, goToModeSelection, playSound, startCorrection, exitCorrection, clearChildReports
                 };
             }
         }).mount('#app');
