@@ -505,13 +505,13 @@
                                     <input v-else type="text" readonly :value="answerArrayRow2[5 - colIdx] || ''" @click="activeTarget = {type: 'answerRow2', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'answerRow2' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
-                            <!-- Baris Jawapan Akhir (Hasil Tambah Baris 1 & 2 - 5 Kotak dengan Kotak Carry & No Soalan) -->
+                            <!-- Baris Jawapan Akhir (Hasil Tambah Baris 1 & 2 - 5 Kotak dengan Kotak Carry Kecil di Atas & No Soalan) -->
                             <div class="flex mt-3 items-center relative">
                                 <div class="flex">
                                     <div v-for="colIdx in 5" :key="'ansFinal-'+colIdx" class="flex flex-col items-center w-14 mx-0.5 relative">
-                                        <!-- Kotak Carry untuk Total Tambah di Bawah (Darab) -->
-                                        <div class="w-12 h-8 flex items-center justify-center mb-1">
-                                            <input type="text" readonly :value="carryFinalBottomArray[5 - colIdx] || ''" @click="activeTarget = {type: 'carryFinalBottom', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'carryFinalBottom' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-amber-300 bg-white'" class="w-9 h-7 text-xs text-center border-2 border-dashed rounded-md font-bold text-purple-600 focus:outline-none cursor-pointer" placeholder="c">
+                                        <!-- Kotak Carry Kecil di Atas Baris Jawapan Pertama (Hasil Tambah Darab) -->
+                                        <div class="w-12 h-7 flex items-center justify-center mb-1">
+                                            <input type="text" readonly :value="carryFinalBottomArray[5 - colIdx] || ''" @click="activeTarget = {type: 'carryFinalBottom', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'carryFinalBottom' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-amber-300 bg-white'" class="w-7 h-6 text-[10px] text-center border-2 border-dashed rounded-md font-bold text-purple-600 focus:outline-none cursor-pointer" placeholder="c">
                                         </div>
                                         <input type="text" readonly :value="answerArrayFinal[5 - colIdx] || ''" @click="activeTarget = {type: 'answerFinal', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'answerFinal' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-emerald-500 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-emerald-700 focus:outline-none transition-all shadow-sm cursor-pointer">
                                     </div>
@@ -930,7 +930,7 @@
                 const answerArrayFinal = ref([]);  
                 const carryArray = ref([]);  
                 const carryBottomArray = ref([]);       // Kotak Carry Bawah untuk operasi Tambah biasa
-                const carryFinalBottomArray = ref([]);  // Kotak Carry Bawah untuk baris total tambah Darab
+                const carryFinalBottomArray = ref([]);  // Kotak Carry Bawah kecil untuk baris total tambah Darab
                 const borrowArray = ref([]); 
                 
                 const divisionInputs = ref({ quotientArray: [], remainderArray: [], finalRemainder: '' });
