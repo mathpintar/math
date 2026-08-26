@@ -1303,7 +1303,6 @@
                         if (target.index < limitCols - 1) {
                             activeTarget.value = { type: 'answer', index: target.index + 1 };
                         } else if (op === 'Darab') {
-                            // Diperbetulkan: Kotak pertama row2 (index 0, iaitu posisi paling kanan) dilangkau kerana dikunci kosong, jadi terus bermula dari index 1
                             activeTarget.value = { type: 'answerRow2', index: 1 };
                         }
                     } else if (target.type === 'answerRow2') {
