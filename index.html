@@ -456,7 +456,8 @@
                 </div>
 
                 <div class="w-full flex-grow bg-amber-50 p-6 rounded-3xl border-4 border-amber-200 shadow-inner min-h-[300px] flex justify-center items-center relative math-font">
-                    <div v-if="config.operation === 'Tambah' || config.operation === 'Darab'" class="flex items-center justify-center relative">
+                    <!-- TAMBAH & DARAB BIASA (BUKAN PRO) -->
+                    <div v-if="(config.operation === 'Tambah' || config.operation === 'Darab') && !(config.operation === 'Darab' && config.difficulty === 'Pro')" class="flex items-center justify-center relative">
                         <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[85px]">{{ config.operation === 'Tambah' ? '+' : '×' }}</div>
                         <div class="flex">
                             <div v-for="colIdx in maxColumns" :key="'col-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
@@ -471,6 +472,29 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- DARAB PRO (2 BARIS KOTAK JAWAPAN, DIGIT PULUH MULA KOTAK KEDUA KANAN, KOTAK KANAN SEKALI MATI UNTUK BARIS 2) -->
+                    <div v-if="config.operation === 'Darab' && config.difficulty === 'Pro'" class="flex items-center justify-center relative">
+                        <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[115px]">×</div>
+                        <div class="flex">
+                            <div v-for="colIdx in maxColumns" :key="'col-pro-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
+                                <div class="w-12 h-8 flex items-center justify-center mb-1">
+                                    <input type="text" readonly :value="carryArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'carry', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'carry' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-amber-300 bg-white'" class="w-10 h-7 text-sm text-center border-2 border-dashed rounded-lg font-bold text-purple-600 focus:outline-none cursor-pointer">
+                                </div>
+                                <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800">{{ getDigitAt(currentQuestion.num1, maxColumns - colIdx) }}</div>
+                                <div class="w-12 h-12 flex items-center justify-center text-4xl font-black text-slate-800 border-b-4 border-slate-800 pb-1">{{ getDigitAt(currentQuestion.num2, maxColumns - colIdx) }}</div>
+                                <div class="w-12 h-12 flex items-center justify-center pt-1">
+                                    <input type="text" readonly :value="answerArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answer', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-10 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
+                                </div>
+                                <div class="w-12 h-12 flex items-center justify-center pt-1">
+                                    <!-- Kotak pertama sebelah kanan (colIdx === 1) dimatikan -->
+                                    <div v-if="colIdx === 1" class="w-11 h-10 bg-slate-200 border-2 border-slate-300 rounded-xl flex items-center justify-center text-slate-400 font-bold select-none cursor-not-allowed">✕</div>
+                                    <input v-else type="text" readonly :value="answerArrayRow2[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answerRow2', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answerRow2' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-10 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div v-if="config.operation === 'Tolak'" class="flex items-center justify-center relative">
                         <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[85px]">-</div>
                         <div class="flex">
@@ -913,6 +937,7 @@
                 const correctionIndex = ref(null);
 
                 const answerArray = ref([]); 
+                const answerArrayRow2 = ref([]); // Baris kedua jawapan khusus untuk Darab Pro
                 const carryArray = ref([]);  
                 const borrowArray = ref([]); 
                 
@@ -1358,15 +1383,21 @@
 
                 const setupQuestionLayout = () => {
                     const op = config.value.operation;
-                    activeTarget.value = { type: 'answer', index: 0 };
+                    const isDarabPro = (op === 'Darab' && config.value.difficulty === 'Pro');
+                    
                     answerArray.value = Array(maxColumns.value).fill('');
+                    answerArrayRow2.value = Array(maxColumns.value).fill('');
                     carryArray.value = Array(maxColumns.value).fill('');
                     borrowArray.value = Array(maxColumns.value).fill('');
 
-                    if (op === 'Bahagi') {
+                    if (isDarabPro) {
+                        activeTarget.value = { type: 'answer', index: 0 };
+                    } else if (op === 'Bahagi') {
                         const len = String(currentQuestion.value.num1).length;
                         divisionInputs.value = { quotientArray: Array(len).fill(''), remainderArray: Array(len).fill(''), finalRemainder: '' };
                         activeTarget.value = { type: 'div_quotient_arr', index: 0 };
+                    } else {
+                        activeTarget.value = { type: 'answer', index: 0 };
                     }
                 };
 
@@ -1409,6 +1440,7 @@
 
                     const target = activeTarget.value;
                     const op = config.value.operation;
+                    const isDarabPro = (op === 'Darab' && config.value.difficulty === 'Pro');
                     const digitCount = String(currentQuestion.value.num1).length;
                     
                     if (key === 'C') { clearActiveTarget(); return; }
@@ -1423,7 +1455,7 @@
                                 const d2 = parseInt(getDigitAt(currentQuestion.value.num2, target.index)) || 0;
                                 const c = parseInt(carryArray.value[target.index]) || 0;
                                 if ((d1 + d2 + c) > 9) needsCarry = true;
-                            } else if (op === 'Darab') {
+                            } else if (op === 'Darab' && !isDarabPro) {
                                 const d1 = parseInt(getDigitAt(currentQuestion.value.num1, target.index)) || 0;
                                 const num2Val = parseInt(currentQuestion.value.num2) || 0;
                                 const c = parseInt(carryArray.value[target.index]) || 0;
@@ -1431,6 +1463,14 @@
                             }
                             if (needsCarry) activeTarget.value = { type: 'carry', index: target.index + 1 };
                             else activeTarget.value = { type: 'answer', index: target.index + 1 };
+                        } else if (isDarabPro && target.index === maxColumns.value - 1) {
+                            // Pindah ke baris kedua, kotak kedua dari kanan (index 1 kerana index 0 dimatikan)
+                            activeTarget.value = { type: 'answerRow2', index: 1 };
+                        }
+                    } else if (target.type === 'answerRow2') {
+                        answerArrayRow2.value[target.index] = key;
+                        if (target.index < maxColumns.value - 1) {
+                            activeTarget.value = { type: 'answerRow2', index: target.index + 1 };
                         }
                     } else if (target.type === 'carry') {
                         carryArray.value[target.index] = key;
@@ -1453,6 +1493,7 @@
                 const clearActiveTarget = () => {
                     const target = activeTarget.value;
                     if (target.type === 'answer') answerArray.value[target.index] = '';
+                    if (target.type === 'answerRow2') answerArrayRow2.value[target.index] = '';
                     if (target.type === 'carry') carryArray.value[target.index] = '';
                     if (target.type === 'borrow') borrowArray.value[target.index] = '';
                     if (target.type === 'div_quotient_arr') divisionInputs.value.quotientArray[target.index] = '';
@@ -1463,19 +1504,38 @@
                 const backspaceActiveTarget = () => {
                     const target = activeTarget.value;
                     const op = config.value.operation;
+                    const isDarabPro = (op === 'Darab' && config.value.difficulty === 'Pro');
 
                     if (target.type === 'answer') {
                         answerArray.value[target.index] = '';
                         if (target.index > 0) {
-                            if (op === 'Tambah' || op === 'Darab') activeTarget.value = { type: 'carry', index: target.index };
+                            if ((op === 'Tambah' || (op === 'Darab' && !isDarabPro))) activeTarget.value = { type: 'carry', index: target.index };
                             else activeTarget.value = { type: 'answer', index: target.index - 1 };
                         }
+                    } else if (target.type === 'answerRow2') {
+                        answerArrayRow2.value[target.index] = '';
+                        if (target.index > 1) {
+                            activeTarget.value = { type: 'answerRow2', index: target.index - 1 };
+                        } else if (target.index === 1) {
+                            activeTarget.value = { type: 'answer', index: maxColumns.value - 1 };
+                        }
+                    } else if (target.type === 'carry') { 
+                        carryArray.value[target.index] = ''; 
+                        activeTarget.value = { type: 'answer', index: target.index - 1 }; 
+                    } else if (target.type === 'borrow') { 
+                        let val = String(borrowArray.value[target.index] || ''); 
+                        borrowArray.value[target.index] = val.substring(0, val.length - 1); 
+                    } else if (target.type === 'div_quotient_arr') { 
+                        divisionInputs.value.quotientArray[target.index] = ''; 
+                        if (target.index > 0) activeTarget.value = { type: 'div_remainder_arr', index: target.index - 1 }; 
+                    } else if (target.type === 'div_remainder_arr') { 
+                        divisionInputs.value.remainderArray[target.index] = ''; 
+                        activeTarget.value = { type: 'div_quotient_arr', index: target.index }; 
+                    } else if (target.type === 'div_final_remainder') { 
+                        divisionInputs.value.finalRemainder = ''; 
+                        const len = String(currentQuestion.value.num1).length; 
+                        activeTarget.value = { type: 'div_quotient_arr', index: len - 1 }; 
                     }
-                    if (target.type === 'carry') { carryArray.value[target.index] = ''; activeTarget.value = { type: 'answer', index: target.index - 1 }; }
-                    if (target.type === 'borrow') { let val = String(borrowArray.value[target.index] || ''); borrowArray.value[target.index] = val.substring(0, val.length - 1); }
-                    if (target.type === 'div_quotient_arr') { divisionInputs.value.quotientArray[target.index] = ''; if (target.index > 0) activeTarget.value = { type: 'div_remainder_arr', index: target.index - 1 }; }
-                    if (target.type === 'div_remainder_arr') { divisionInputs.value.remainderArray[target.index] = ''; activeTarget.value = { type: 'div_quotient_arr', index: target.index }; }
-                    if (target.type === 'div_final_remainder') { divisionInputs.value.finalRemainder = ''; const len = String(currentQuestion.value.num1).length; activeTarget.value = { type: 'div_quotient_arr', index: len - 1 }; }
                 };
 
                 const submitSifirAnswer = () => {
@@ -1501,9 +1561,10 @@
                 const submitAnswer = () => {
                     const op = config.value.operation;
                     const q = currentQuestion.value;
+                    const isDarabPro = (op === 'Darab' && config.value.difficulty === 'Pro');
                     let isCorrect = false; let studentAnsStr = ''; let correctAnsStr = '';
 
-                    if (op === 'Tambah' || op === 'Tolak' || op === 'Darab') {
+                    if (op === 'Tambah' || op === 'Tolak' || (op === 'Darab' && !isDarabPro)) {
                         const submittedString = [...answerArray.value].reverse().join('').trim();
                         const submittedAns = parseInt(submittedString, 10) || 0;
                         studentAnsStr = submittedString || '0';
@@ -1511,6 +1572,16 @@
                         if (op === 'Tambah') actualAns = q.num1 + q.num2;
                         if (op === 'Tolak') actualAns = q.num1 - q.num2;
                         if (op === 'Darab') actualAns = q.num1 * q.num2;
+                        correctAnsStr = String(actualAns);
+                        if (submittedAns === actualAns) isCorrect = true;
+                    } else if (isDarabPro) {
+                        const row1Str = [...answerArray.value].reverse().join('').trim();
+                        const row2Str = [...answerArrayRow2.value].reverse().join('').trim();
+                        const val1 = parseInt(row1Str, 10) || 0;
+                        const val2 = parseInt(row2Str, 10) || 0;
+                        const submittedAns = val1 + val2;
+                        studentAnsStr = `${row1Str} + ${row2Str}`;
+                        const actualAns = q.num1 * q.num2;
                         correctAnsStr = String(actualAns);
                         if (submittedAns === actualAns) isCorrect = true;
                     } else if (op === 'Bahagi') {
@@ -1607,7 +1678,7 @@
                     lang, t, toggleLanguage,
                     user, parentUser, screen, sidebarOpen, childPinInput, authLoading, isManagingPin,
                     newChildName, childProfiles, reportList, filteredReportList, parentFilteredReports, selectedChildForReport, config, sifirConfig, score, currentQuestionIndex,
-                    currentQuestion, currentSifirQuestion, currentSifirIndex, sifirAnswerInput, maxColumns, answerArray, carryArray, borrowArray, divisionInputs, activeTarget,
+                    currentQuestion, currentSifirQuestion, currentSifirIndex, sifirAnswerInput, maxColumns, answerArray, answerArrayRow2, carryArray, borrowArray, divisionInputs, activeTarget,
                     formattedTime, currentAccuracy, currentSessionTotalQuestions, currentSessionType, finalTimeDisplay, questions, correctionIndex,
                     handleGoogleLogin, loginAsChild, addChildProfile, regenerateChildPin, deleteChildProfile, getChildStats,
                     logout, openProfile, openReports, getDigitAt, changeOperation, startSession, startSifirSession, submitSifirAnswer, triggerBorrow, pressKey, 
