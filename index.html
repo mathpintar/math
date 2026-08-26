@@ -521,7 +521,7 @@
                             </div>
                         </template>
 
-                        <!-- DARAB MUDAH & SEDERHANA (1 Baris Sahaja) -->
+                        <!-- DARAB MUDAH (2 Kotak Jawapan) & SEDERHANA (3 Kotak Jawapan) -->
                         <template v-else>
                             <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[55px]">×</div>
                             <div class="flex flex-col items-center">
@@ -534,11 +534,11 @@
                                         <div class="w-12 h-12 flex items-center justify-center text-3xl font-black text-slate-800 border-b-4 border-slate-800 pb-1">{{ getDigitAt(currentQuestion.num2, maxColumns - colIdx) }}</div>
                                     </div>
                                 </div>
-                                <!-- Baris Jawapan Tunggal -->
+                                <!-- Baris Jawapan Tunggal Dinamik (2 Kotak untuk Mudah, 3 Kotak untuk Sederhana) -->
                                 <div class="flex mt-3 items-center relative border-b-4 border-slate-800 pb-3">
                                     <div class="flex">
-                                        <div v-for="colIdx in maxColumns" :key="'ansSimple-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
-                                            <input type="text" readonly :value="answerArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answer', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-12 text-center border-2 rounded-xl text-3xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
+                                        <div v-for="colIdx in darabAnswerBoxCount" :key="'ansSimple-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
+                                            <input type="text" readonly :value="answerArray[darabAnswerBoxCount - colIdx] || ''" @click="activeTarget = {type: 'answer', index: darabAnswerBoxCount - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (darabAnswerBoxCount - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-12 text-center border-2 rounded-xl text-3xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                         </div>
                                     </div>
                                     <div class="absolute -right-12 text-slate-400 font-bold text-sm select-none">
@@ -1182,6 +1182,15 @@
                     return Math.max(len1, len2) + (config.value.operation === 'Tambah' ? 1 : 0);
                 });
 
+                // Bilangan kotak jawapan khas untuk Darab Mudah (2 kotak) dan Sederhana (3 kotak)
+                const darabAnswerBoxCount = computed(() => {
+                    if (config.value.operation === 'Darab') {
+                        if (config.value.difficulty === 'Mudah') return 2;
+                        if (config.value.difficulty === 'Sederhana') return 3;
+                    }
+                    return maxColumns.value;
+                });
+
                 const formattedTime = computed(() => `${String(Math.floor(timerSeconds.value / 60)).padStart(2, '0')}:${String(timerSeconds.value % 60).padStart(2, '0')}`);
                 const currentAccuracy = computed(() => currentQuestionIndex.value === 0 ? 100 : Math.round((score.value / currentQuestionIndex.value) * 100));
                 const currentSessionTotalQuestions = computed(() => currentSessionType.value === 'Bentuk Lazim' ? config.value.totalQuestions : sifirConfig.value.totalQuestions);
@@ -1272,7 +1281,8 @@
                     const op = config.value.operation;
                     activeTarget.value = { type: 'answer', index: 0 };
                     
-                    answerArray.value = Array(maxColumns.value).fill('');
+                    const boxCount = (op === 'Darab' && config.value.difficulty !== 'Pro') ? darabAnswerBoxCount.value : maxColumns.value;
+                    answerArray.value = Array(boxCount).fill('');
                     answerArrayRow2.value = Array(maxColumns.value).fill('');
                     answerArrayFinal.value = Array(maxColumns.value).fill('');
                     carryArray.value = Array(maxColumns.value).fill('');
@@ -1308,7 +1318,7 @@
                     const target = activeTarget.value;
                     const op = config.value.operation;
                     const digitCount = String(currentQuestion.value.num1).length;
-                    const limitCols = maxColumns.value;
+                    const limitCols = (op === 'Darab' && config.value.difficulty !== 'Pro') ? darabAnswerBoxCount.value : maxColumns.value;
                     
                     if (key === 'C') { clearActiveTarget(); return; }
                     if (key === 'BACKSPACE') { backspaceActiveTarget(); return; }
@@ -1532,7 +1542,7 @@
                 return {
                     lang, t, toggleLanguage, user, parentUser, screen, sidebarOpen, childPinInput, authLoading, isManagingPin,
                     newChildName, childProfiles, reportList, filteredReportList, parentFilteredReports, selectedChildForReport, config, sifirConfig, score, currentQuestionIndex,
-                    currentQuestion, currentSifirQuestion, currentSifirIndex, sifirAnswerInput, maxColumns, answerArray, answerArrayRow2, answerArrayFinal, carryArray, carryBottomArray, borrowArray, divisionInputs, activeTarget,
+                    currentQuestion, currentSifirQuestion, currentSifirIndex, sifirAnswerInput, maxColumns, darabAnswerBoxCount, answerArray, answerArrayRow2, answerArrayFinal, carryArray, carryBottomArray, borrowArray, divisionInputs, activeTarget,
                     formattedTime, currentAccuracy, currentSessionTotalQuestions, currentSessionType, finalTimeDisplay, questions, correctionIndex,
                     handleGoogleLogin, loginAsChild, addChildProfile, regenerateChildPin, deleteChildProfile, getChildStats,
                     logout, openProfile, openReports, getDigitAt, changeOperation, startSession, startSifirSession, submitSifirAnswer, triggerBorrow, pressKey, 
