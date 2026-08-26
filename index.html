@@ -492,9 +492,12 @@
                                     <div class="w-12 h-12 flex items-center justify-center text-3xl font-black text-slate-800 border-b-4 border-slate-800 pb-1">{{ getDigitAt(currentQuestion.num2, 5 - colIdx) }}</div>
                                 </div>
                             </div>
-                            <!-- Baris Jawapan 1 (5 Kotak) -->
+                            <!-- Baris Jawapan 1 (5 Kotak dengan Kotak Carry Kecil di Atas) -->
                             <div class="flex mt-2">
                                 <div v-for="colIdx in 5" :key="'ans1-'+colIdx" class="flex flex-col items-center w-14 mx-0.5">
+                                    <div class="w-12 h-8 flex items-center justify-center mb-1">
+                                        <input type="text" readonly :value="carryBottomArray[5 - colIdx] || ''" @click="activeTarget = {type: 'carryBottom', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'carryBottom' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-amber-300 bg-white'" class="w-8 h-7 text-xs text-center border-2 border-dashed rounded-md font-bold text-purple-600 focus:outline-none cursor-pointer" placeholder="c">
+                                    </div>
                                     <input type="text" readonly :value="answerArray[5 - colIdx] || ''" @click="activeTarget = {type: 'answer', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
@@ -505,7 +508,7 @@
                                     <input v-else type="text" readonly :value="answerArrayRow2[5 - colIdx] || ''" @click="activeTarget = {type: 'answerRow2', index: 5 - colIdx}; playSound('click');" :class="activeTarget.type === 'answerRow2' && activeTarget.index === (5 - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-11 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
-                            <!-- Baris Jawapan Akhir (Hasil Tambah Baris 1 & 2 - 5 Kotak & No Soalan) [Kotak Carry Kecil Dibuang] -->
+                            <!-- Baris Jawapan Akhir (Hasil Tambah Baris 1 & 2 - 5 Kotak & No Soalan) -->
                             <div class="flex mt-3 items-center relative">
                                 <div class="flex">
                                     <div v-for="colIdx in 5" :key="'ansFinal-'+colIdx" class="flex flex-col items-center w-14 mx-0.5 relative">
@@ -925,7 +928,7 @@
                 const answerArrayRow2 = ref([]);   
                 const answerArrayFinal = ref([]);  
                 const carryArray = ref([]);  
-                const carryBottomArray = ref([]);       // Kotak Carry Bawah untuk operasi Tambah biasa
+                const carryBottomArray = ref([]);       // Kotak Carry Bawah untuk operasi Tambah / Darab baris pertama
                 const borrowArray = ref([]); 
                 
                 const divisionInputs = ref({ quotientArray: [], remainderArray: [], finalRemainder: '' });
