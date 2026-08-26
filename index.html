@@ -473,7 +473,7 @@
                         </div>
                     </div>
 
-                    <!-- DARAB PRO (2 BARIS KOTAK JAWAPAN, DIGIT PULUH MULA KOTAK KEDUA KANAN, KOTAK KANAN SEKALI MATI UNTUK BARIS 2) -->
+                    <!-- DARAB PRO (2 BARIS KOTAK JAWAPAN, KOTAK PERTAMA SEBELAH KANAN SEKALI DIMATIKAN PADA BARIS KEDUA) -->
                     <div v-if="config.operation === 'Darab' && config.difficulty === 'Pro'" class="flex items-center justify-center relative">
                         <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[115px]">×</div>
                         <div class="flex">
@@ -487,8 +487,8 @@
                                     <input type="text" readonly :value="answerArray[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answer', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answer' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-10 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                                 <div class="w-12 h-12 flex items-center justify-center pt-1">
-                                    <!-- Kotak pertama sebelah kanan (colIdx === 1) dimatikan -->
-                                    <div v-if="colIdx === 1" class="w-11 h-10 bg-slate-200 border-2 border-slate-300 rounded-xl flex items-center justify-center text-slate-400 font-bold select-none cursor-not-allowed">✕</div>
+                                    <!-- Kotak pertama sebelah kanan sekali (colIdx === maxColumns, iaitu maxColumns - colIdx === 0) dimatikan -->
+                                    <div v-if="(maxColumns - colIdx) === 0" class="w-11 h-10 bg-slate-200 border-2 border-slate-300 rounded-xl flex items-center justify-center text-slate-400 font-bold select-none cursor-not-allowed">✕</div>
                                     <input v-else type="text" readonly :value="answerArrayRow2[maxColumns - colIdx] || ''" @click="activeTarget = {type: 'answerRow2', index: maxColumns - colIdx}; playSound('click');" :class="activeTarget.type === 'answerRow2' && activeTarget.index === (maxColumns - colIdx) ? 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-400' : 'border-slate-400 bg-white'" class="w-11 h-10 text-center border-2 rounded-xl text-2xl font-black text-slate-900 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 </div>
                             </div>
@@ -1464,7 +1464,7 @@
                             if (needsCarry) activeTarget.value = { type: 'carry', index: target.index + 1 };
                             else activeTarget.value = { type: 'answer', index: target.index + 1 };
                         } else if (isDarabPro && target.index === maxColumns.value - 1) {
-                            // Pindah ke baris kedua, kotak kedua dari kanan (index 1 kerana index 0 dimatikan)
+                            // Pindah ke baris kedua, mula dari index 1 (kerana index 0 dimatikan di sebelah kanan)
                             activeTarget.value = { type: 'answerRow2', index: 1 };
                         }
                     } else if (target.type === 'answerRow2') {
@@ -1576,7 +1576,12 @@
                         if (submittedAns === actualAns) isCorrect = true;
                     } else if (isDarabPro) {
                         const row1Str = [...answerArray.value].reverse().join('').trim();
-                        const row2Str = [...answerArrayRow2.value].reverse().join('').trim();
+                        // Gabungkan baris kedua dengan mengabaikan indeks ke-0 (kotak mati sebelah kanan)
+                        const row2Parts = [];
+                        for (let i = answerArrayRow2.value.length - 1; i >= 1; i--) {
+                            row2Parts.push(answerArrayRow2.value[i] || '');
+                        }
+                        const row2Str = row2Parts.join('').trim();
                         const val1 = parseInt(row1Str, 10) || 0;
                         const val2 = parseInt(row2Str, 10) || 0;
                         const submittedAns = val1 + val2;
